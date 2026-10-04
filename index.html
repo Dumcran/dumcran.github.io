@@ -3,207 +3,340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SBOROCHKA ANTICHEAT — обязательная проверка игрока</title>
+<title>NEXUS ANTICHEAT — досье нарушителя</title>
 <style>
+:root{--bg:#0b0e1a;--panel:#131829;--panel2:#0f1424;--line:#232c4d;--cyan:#22d3ee;--mag:#e879f9;--org:#fb923c;--red:#ef4444;--grn:#34d399;--txt:#dbe2f4;--dim:#7c86a8}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0a;color:#0f0;font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
-.scanlines{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,0,.03) 0 1px,transparent 1px 3px);z-index:99}
-h1{color:#f00;text-shadow:0 0 20px #f00;font-size:clamp(18px,3.5vw,36px);text-align:center;margin:10px 0;animation:blink 1.2s infinite}
-@keyframes blink{50%{opacity:.55}}
-.sub{color:#888;margin-bottom:16px;text-align:center;font-size:14px}
-.box{width:min(720px,95vw);border:2px solid #0f0;background:#050505;padding:22px;border-radius:8px;box-shadow:0 0 30px rgba(0,255,0,.2)}
-.screen{display:none}.screen.on{display:block;animation:fade .3s}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-input{width:100%;background:#000;border:1px solid #0f0;color:#0f0;padding:12px;font-family:inherit;font-size:18px;border-radius:4px;outline:none;margin:10px 0}
-button{background:#f00;color:#fff;border:none;padding:14px 20px;font-family:inherit;font-size:17px;font-weight:bold;cursor:pointer;border-radius:4px;letter-spacing:1px;width:100%;margin-top:10px}
-button:hover{background:#c00;box-shadow:0 0 20px #f00}
-button.ghost{background:#111;border:1px solid #0f0;color:#0f0}
-button.ghost:hover{background:#1a1a1a}
-button:disabled{background:#444;cursor:wait;box-shadow:none}
-#log{margin-top:12px;height:220px;overflow-y:auto;background:#000;border:1px solid #333;padding:10px;font-size:13px;line-height:1.7;white-space:pre-wrap}
-#log .warn{color:#ff0}#log .bad{color:#f00;font-weight:bold}#log .good{color:#0f0}#log .dim{color:#666}
-.bar{height:22px;background:#111;border:1px solid #0f0;border-radius:4px;margin-top:12px;overflow:hidden}
-.bar>div{height:100%;width:0;background:linear-gradient(90deg,#0f0,#ff0,#f00);transition:width .2s}
-.big{font-size:15px;color:#ccc;line-height:1.8;margin:10px 0}
-.big b{color:#ff0}.big .r{color:#f00}.big .g{color:#0f0}
-#clickzone{background:#111;border:2px dashed #0f0;border-radius:8px;height:180px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;cursor:pointer;user-select:none;margin-top:12px}
-#clickzone:hover{background:#161616}
-#reactzone{background:#600;border-radius:8px;height:160px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;cursor:pointer;user-select:none;margin-top:12px;color:#fff}
-#reactzone.go{background:#0a0}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.cell{background:#111;border:2px solid #333;border-radius:6px;font-size:44px;padding:18px 0;text-align:center;cursor:pointer;user-select:none}
-.cell.sel{border-color:#0f0;box-shadow:0 0 12px #0f0}
-.timer{font-size:40px;text-align:center;color:#ff0;margin:10px 0;font-weight:bold}
-.stamp{display:inline-block;border:3px solid #f00;color:#f00;font-weight:bold;font-size:26px;padding:6px 20px;transform:rotate(-8deg);margin:12px 0;letter-spacing:3px}
-.center{text-align:center}
-.red{color:#f00}.yellow{color:#ff0}.grey{color:#888}.green{color:#0f0}
-.warnbox{border:1px solid #f00;background:#1a0000;padding:12px;border-radius:6px;margin:12px 0;font-size:14px;line-height:1.7;color:#ffb0b0}
-.footer{color:#333;margin-top:20px;font-size:12px;text-align:center;max-width:700px}
-#fakebsod{position:fixed;inset:0;background:#0000aa;color:#fff;display:none;z-index:100;padding:60px;font-size:18px;line-height:2}
-.small{font-size:12px;color:#555;margin-top:8px}
-a{color:#0f0}
+body{background:radial-gradient(1200px 600px at 20% -10%,#1b2450 0%,transparent 60%),radial-gradient(1000px 500px at 110% 10%,#3b1150 0%,transparent 55%),var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.bg-grid{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);background-size:36px 36px;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 80%)}
+header{position:sticky;top:0;z-index:50;background:rgba(11,14,26,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--mag));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(34,211,238,.5)}
+header h1{font-size:18px;letter-spacing:2px}header h1 span{color:var(--cyan)}
+.hbadge{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:5px 12px;color:var(--dim);background:var(--panel)}
+.hbadge b{color:var(--grn)}.hdot{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:6px;box-shadow:0 0 8px var(--grn);animation:pl 1.5s infinite}
+@keyframes pl{50%{opacity:.4}}
+main{max-width:1280px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.rail{display:flex;gap:8px;flex-wrap:wrap}
+.step{flex:1;min-width:130px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--dim);position:relative;overflow:hidden}
+.step b{display:block;font-size:13px;color:var(--txt);margin-bottom:2px}
+.step.active{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.25);color:var(--cyan)}
+.step.active b{color:#fff}
+.step.done{border-color:var(--grn)}.step.done b{color:var(--grn)}
+.step.done::after{content:'✔';position:absolute;right:10px;top:8px;color:var(--grn)}
+.grid{display:grid;grid-template-columns:320px 1fr 300px;gap:16px}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.card h3{font-size:12px;letter-spacing:2px;color:var(--dim);margin-bottom:12px;text-transform:uppercase}
+.card h3 i{font-style:normal;margin-right:6px}
+.avatar{width:84px;height:84px;border-radius:16px;background:linear-gradient(135deg,#2b3a6e,#6e2b6e);display:flex;align-items:center;justify-content:center;font-size:44px;border:2px solid var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.4)}
+.pname{font-size:22px;font-weight:800;margin:10px 0 2px}
+.prow{display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px dashed var(--line);color:var(--dim)}
+.prow b{color:var(--txt);font-family:monospace}
+.tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;margin:3px 4px 0 0}
+.t-red{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.t-org{background:rgba(251,146,60,.15);color:#fdba74;border:1px solid rgba(251,146,60,.4)}
+input{width:100%;background:#0a0d18;border:1px solid var(--line);color:#fff;padding:12px;border-radius:10px;font-size:15px;outline:none;margin-top:10px}
+input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(34,211,238,.3)}
+button{background:linear-gradient(90deg,#e11d48,#f97316);color:#fff;border:none;padding:13px;font-size:15px;font-weight:800;cursor:pointer;border-radius:10px;width:100%;margin-top:12px;letter-spacing:1px}
+button:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(249,115,22,.4)}
+button.ghost{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
+button.ghost:hover{background:rgba(34,211,238,.1);box-shadow:0 0 14px rgba(34,211,238,.3)}
+button:disabled{opacity:.4;cursor:wait;box-shadow:none}
+.gauge{display:flex;flex-direction:column;align-items:center}
+.gnum{font-size:40px;font-weight:900;color:var(--red);text-shadow:0 0 18px rgba(239,68,68,.6)}
+.glab{font-size:11px;color:var(--dim);letter-spacing:2px}
+.dbar{margin:9px 0;font-size:12px}
+.dbar .t{display:flex;justify-content:space-between;margin-bottom:4px}.dbar .t b{font-family:monospace;color:var(--org)}
+.track{height:9px;background:#0a0d18;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--org),var(--red));transition:width 1s ease}
+#term{background:#05070d;border:1px solid var(--line);border-radius:10px;height:250px;overflow-y:auto;padding:10px;font-family:Consolas,monospace;font-size:12px;line-height:1.75}
+#term .warn{color:var(--org)}#term .bad{color:var(--red);font-weight:bold}#term .good{color:var(--grn)}#term .dim{color:#4b5470}#term .cy{color:var(--cyan)}
+#pingc{width:100%;height:90px;background:#05070d;border:1px solid var(--line);border-radius:10px}
+.ev{font-size:12px;color:var(--dim);padding:7px 0;border-bottom:1px dashed var(--line)}
+.ev b{color:var(--org)}
+.screen{display:none}.screen.on{display:block;animation:fd .35s}
+@keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.big{font-size:14px;line-height:1.7;color:#c4cbe4;margin-bottom:10px}
+.big b{color:#fff}.r{color:var(--red)}.g{color:var(--grn)}.o{color:var(--org)}.c{color:var(--cyan)}
+.timer{font-size:38px;text-align:center;color:var(--org);font-weight:900;margin:8px 0;font-family:monospace}
+/* faceid */
+.facebox{position:relative;width:230px;height:280px;margin:14px auto;border:2px dashed var(--cyan);border-radius:18px;background:#05070d;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden}
+.facebox .scanline{position:absolute;left:0;right:0;height:3px;background:var(--cyan);box-shadow:0 0 16px var(--cyan);top:-5px;display:none}
+.facebox.scanning .scanline{display:block;animation:scan 1.4s linear infinite}
+@keyframes scan{from{top:-5px}to{top:100%}}
+.facebox .corner{position:absolute;width:26px;height:26px;border:3px solid var(--cyan)}
+.corner.tl{top:8px;left:8px;border-right:none;border-bottom:none}.corner.tr{top:8px;right:8px;border-left:none;border-bottom:none}
+.corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}.corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
+/* mic */
+.micbars{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:90px;margin:12px 0;background:#05070d;border:1px solid var(--line);border-radius:10px;padding:12px}
+.micbars div{width:12px;background:linear-gradient(180deg,var(--cyan),var(--mag));border-radius:4px;height:6px;transition:height .12s}
+.micbars.live div{animation:mb .3s infinite alternate}
+@keyframes mb{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
+/* lie */
+.qbox{background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:10px;text-align:center}
+.qbox .q{font-size:19px;font-weight:800;margin-bottom:6px}
+.qbox .pulse{font-family:monospace;color:var(--org);font-size:13px;margin-bottom:12px}
+.qbtns{display:flex;gap:10px}.qbtns button{margin-top:0}
+.qbtns .yes{background:linear-gradient(90deg,#059669,#34d399)}
+.qbtns .no{background:linear-gradient(90deg,#e11d48,#f97316)}
+.qlog{font-size:13px;margin-top:10px;line-height:2}
+/* inventory */
+.inv{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:12px;background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:12px}
+.slot{background:#141a30;border:2px solid #2a3458;border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,3vw,30px);cursor:pointer;position:relative;transition:.15s}
+.slot:hover{border-color:var(--cyan);transform:scale(1.08)}
+.slot.contra{border-color:var(--mag);box-shadow:0 0 10px rgba(232,121,249,.6)}
+.slot.found{border-color:var(--red);box-shadow:0 0 14px var(--red);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.slot .cnt{position:absolute;bottom:2px;right:5px;font-size:11px;color:#fff;text-shadow:1px 1px #000;font-family:monospace}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.stat{background:#0a0d18;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.stat .v{font-size:22px;font-weight:900;font-family:monospace}
+.stat .l{font-size:11px;color:var(--dim);margin-top:4px}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:900;font-size:30px;padding:8px 26px;transform:rotate(-7deg);margin:14px 0;letter-spacing:4px;background:rgba(239,68,68,.07);box-shadow:0 0 30px rgba(239,68,68,.3)}
+.hex{font-family:monospace;font-size:11px;color:#4b5470;word-break:break-all;line-height:1.8}
+.hex b{color:var(--mag)}
+.kv{font-size:12px;color:var(--dim);font-family:monospace;line-height:2}
+.kv b{color:var(--cyan)}
+footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
+#appealres{margin-top:10px;font-size:14px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--panel);border:1px solid var(--red);border-radius:10px;padding:12px 18px;font-size:13px;display:none;z-index:60;box-shadow:0 0 20px rgba(239,68,68,.4)}
 </style>
 </head>
 <body>
-<div class="scanlines"></div>
-<h1>⚠ SBOROCHKA ANTICHEAT v9.228 ⚠</h1>
-<div class="sub">обязательная проверка игрока | minecraft 1.21.11 | отказ = автобан</div>
-<div class="box">
+<div class="bg-grid"></div>
+<header>
+<div class="logo">🛡️</div>
+<h1>NEXUS<span>ANTICHEAT</span> <span style="color:#3d4463;font-size:12px">v9.228 // MINECRAFT 1.21.11</span></h1>
+<div class="hbadge"><span class="hdot"></span>сервер <b>ONLINE</b></div>
+<div class="hbadge">🕐 <b id="clock">--:--:--</b></div>
+<div class="hbadge">👁 следим: <b id="watching">1</b></div>
+</header>
+<main>
 
-<!-- 0 СТАРТ -->
+<div class="rail" id="rail">
+<div class="step" id="st0"><b>00 · Досье</b>идентификация</div>
+<div class="step" id="st1"><b>01 · FaceID</b>морда лица</div>
+<div class="step" id="st2"><b>02 · Голос</b>скажи что чист</div>
+<div class="step" id="st3"><b>03 · Детектор лжи</b>3 вопроса</div>
+<div class="step" id="st4"><b>04 · Шмон</b>инвентарь</div>
+<div class="step" id="st5"><b>05 · Процессы</b>диспетчер</div>
+</div>
+
+<div class="grid">
+<!-- ЛЕВАЯ -->
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="card">
+<h3><i>👤</i>Досье подозреваемого</h3>
+<div style="display:flex;gap:14px;align-items:center">
+<div class="avatar" id="ava">❓</div>
+<div><div class="pname" id="pname">???</div><div style="font-size:12px;color:var(--dim)" id="puuid">uuid: —</div></div>
+</div>
+<div style="margin-top:10px">
+<div class="prow"><span>IP-адрес</span><b id="pip">—.—.—.—</b></div>
+<div class="prow"><span>Клиент</span><b>Fabric 1.21.11</b></div>
+<div class="prow"><span>Потливость ладошек</span><b id="psweat">—</b></div>
+<div class="prow"><span>Дрожь голоса</span><b id="pvoice">—</b></div>
+<div class="prow"><span>Статус</span><b id="pstatus" style="color:var(--org)">ПОДОЗРИТЕЛЬНЫЙ</b></div>
+</div>
+<div style="margin-top:10px" id="ptags"><span class="tag t-org">⚠ на мушке</span></div>
+</div>
+
+<div class="card gauge">
+<h3><i>☢️</i>Уровень угрозы</h3>
+<svg width="170" height="100" viewBox="0 0 170 100">
+<path d="M15 90 A70 70 0 0 1 155 90" fill="none" stroke="#232c4d" stroke-width="14" stroke-linecap="round"/>
+<path id="garc" d="M15 90 A70 70 0 0 1 155 90" fill="none" stroke="url(#gg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220" style="transition:stroke-dashoffset 1s"/>
+<defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".5" stop-color="#fb923c"/><stop offset="1" stop-color="#ef4444"/></linearGradient></defs>
+</svg>
+<div class="gnum" id="gnum">3%</div>
+<div class="glab">THREAT LEVEL</div>
+</div>
+
+<div class="card">
+<h3><i>📶</i>Пинг · live</h3>
+<canvas id="pingc" width="260" height="90"></canvas>
+<div class="prow"><span>Сейчас</span><b id="pingv">— ms</b></div>
+<div class="prow"><span>Диагноз</span><b id="pingd" style="color:var(--org)">лагает = палится</b></div>
+</div>
+</div>
+
+<!-- ЦЕНТР -->
+<div class="card" style="min-height:560px">
+<h3><i>🔬</i>Центр проверок</h3>
+
 <div class="screen on" id="s0">
-<div class="warnbox">⛔ <b>ВНИМАНИЕ.</b> Аккаунт <b id="w0">игрока</b> помечен системой как <b>ПОДОЗРИТЕЛЬНЫЙ</b>.<br>
-Причины: киллаура, булава с орбиты, рич 6 блоков, мамка жаловалась.<br><br>
-Для снятия подозрений пройди <b>5 проверок</b>. Отказ от проверки = признание в читах = бан.<br>
-Время пошло. Античит не ждёт. Админ тем более.</div>
-<input id="nick" placeholder="Введи свой ник для протокола..." maxlength="16">
-<button onclick="goNick()">▶ НАЧАТЬ ПРОВЕРКУ (назад дороги нет)</button>
-<div class="small">нажимая кнопку ты соглашаешься со всем. вообще со всем.</div>
+<div class="big">Аккаунт помечен: <b class="r">KILLAURA + MACE-AURA</b>, версия <b class="c">1.21.11</b>.<br>Жалоб: <b class="o" id="compl">—</b> · Репортов «он ваще ебанутый»: <b class="o">17</b>.<br><br>Введи ник для протокола. Дальше — 5 новых проверок: камера, голос, детектор лжи, шмон и процессы.</div>
+<input id="nick" placeholder="ник подозреваемого..." maxlength="16">
+<button onclick="goNick()">▶ ОТКРЫТЬ ДОСЬЕ</button>
+<div class="hex" style="margin-top:14px">session_key: <b>0xDEAD_BEEF_CHEAT</b> · node: <b>sborochka-eu-4</b> · точность: <b>146%</b></div>
 </div>
 
-<!-- 1 CPS -->
 <div class="screen" id="s1">
-<div class="big"><b>ПРОВЕРКА 1/5 — CPS-ТЕСТ.</b><br>Кликай по зоне <span class="r">КАК МОЖНО БЫСТРЕЕ</span> 5 секунд.<br>Нормальный человек жмёт <span class="g">6–8 CPS</span>. Читер с автокликером — больше.</div>
-<div class="timer" id="cpsT">5.0</div>
-<div id="clickzone" onclick="cpsHit()">ЖМИ СЮДА</div>
-<div class="big center" id="cpsLive">кликов: 0</div>
+<div class="big"><b>01 · FACEID.</b> Нейросеть смотрит тебе в глаза и видит <span class="r">вину</span>.<br>Расположи морду в рамке и нажми кнопку. Моргание чаще 20 раз/мин = <span class="o">нервный читер</span>.</div>
+<div class="facebox" id="facebox"><span id="faceemo">😐</span><div class="scanline"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div></div>
+<div class="big" style="text-align:center" id="faceRes">камера даже не нужна — мы и так всё видим</div>
+<button onclick="faceScan()" id="facebtn">📷 ВКЛЮЧИТЬ СКАНИРОВАНИЕ МОРДЫ</button>
 </div>
 
-<!-- 2 РЕАКЦИЯ -->
 <div class="screen" id="s2">
-<div class="big"><b>ПРОВЕРКА 2/5 — РЕАКЦИЯ.</b><br>Зона красная — жди. Станет <span class="g">ЗЕЛЁНОЙ</span> — жми <span class="r">МГНОВЕННО</span>.<br>Читер реагирует быстрее человека. Человек тупит. Докажи что ты тупой.</div>
-<div id="reactzone" onclick="reactHit()">ЖДИ ЗЕЛЁНЫЙ...</div>
-<div class="big center" id="reactRes"></div>
+<div class="big"><b>02 · ГОЛОС.</b> Скажи вслух: <b class="c">«Я НЕ ЧИТЕР»</b>.<br>Микрофон даже включать не надо — мы считываем дрожь по лицу. Пауза перед «не» = <span class="r">враньё</span>.</div>
+<div class="micbars" id="micbars"></div>
+<div class="big" style="text-align:center" id="voiceRes">нажми запись и говори. громко. как на допросе.</div>
+<button onclick="voiceTest()" id="voicebtn">🎤 НАЧАТЬ ЗАПИСЬ (3 сек)</button>
 </div>
 
-<!-- 3 СКРИНШЕР -->
 <div class="screen" id="s3">
-<div class="big"><b>ПРОВЕРКА 3/5 — СКРИНШЕР МОДОВ.</b><br>Сейчас мы удалённо просканируем твою папку <span class="r">.minecraft/mods</span>.<br>Не закрывай вкладку. Не удаляй Dumcran — мы уже всё видели.</div>
-<button onclick="modsScan()">📁 РАЗРЕШИТЬ СКАНИРОВАНИЕ (иначе бан)</button>
-<div class="bar" style="display:none" id="modsbarw"><div id="modsbar"></div></div>
-<div id="log"></div>
-<div class="center" id="modsnext"></div>
+<div class="big"><b>03 · ДЕТЕКТОР ЛЖИ.</b> Отвечай честно. Датчик пульса уже на твоём стуле.<br><span class="o">«Да»</span> = признание. <span class="r">«Нет»</span> = детектор зафиксировал скачок пульса.</div>
+<div class="qbox"><div class="q" id="qq">...</div><div class="pulse" id="qpulse">♥ пульс: 72 уд/мин</div>
+<div class="qbtns"><button class="yes" onclick="lieAnswer(true)">ДА</button><button class="no" onclick="lieAnswer(false)">НЕТ</button></div></div>
+<div class="qlog" id="qlog"></div>
 </div>
 
-<!-- 4 КАПЧА -->
 <div class="screen" id="s4">
-<div class="big"><b>ПРОВЕРКА 4/5 — КАПЧА.</b><br>Выбери <span class="r">ВСЕ БУЛАВЫ</span>. Читеры булаву чуют издалека, человек путается.</div>
-<div class="grid" id="captcha"></div>
-<button class="ghost" onclick="captchaCheck()">ПОДТВЕРДИТЬ</button>
+<div class="big"><b>04 · ШМОН ИНВЕНТАРЯ.</b> Открываем твой инвентарь удалённо.<br>Найди и кликни <span class="r">ЗАПРЕЩЁННЫЙ предмет</span>. Кликнешь не туда — значит отвлекаешь.</div>
+<div class="inv" id="inv"></div>
+<div class="big" style="text-align:center" id="invRes">шмонаем...</div>
 </div>
 
-<!-- 5 НЕ ДВИГАЙ МЫШЬ -->
 <div class="screen" id="s5">
-<div class="big"><b>ПРОВЕРКА 5/5 — ФИНАЛЬНАЯ. НЕ ДВИГАЙ МЫШЬЮ 5 СЕКУНД.</b><br>Читерские софты постоянно дёргают курсор. Сиди смирно.<br>Движение = читы. Отсутствие движения = <span class="r">подозрительно идеальные читы</span>.</div>
-<div class="timer" id="stillT">5.0</div>
-<div class="big center" id="stillMsg">замер...</div>
+<div class="big"><b>05 · СКАНЕР ПРОЦЕССОВ.</b> Читаем твой диспетчер задач.<br>Честные люди держат там только майнкрафт. Читеры — <span class="r">зоопарк</span>.</div>
+<button onclick="procScan()" id="procbtn">🖥️ РАЗРЕШИТЬ ДОСТУП К ПРОЦЕССАМ (иначе бан)</button>
+<div id="term" style="margin-top:12px"></div>
+<div style="text-align:center" id="procnext"></div>
 </div>
 
-<!-- 6 ФИНАЛ -->
 <div class="screen" id="s6">
-<div class="center" id="verdict"></div>
-<div id="finlog"></div>
-<button style="background:#600" id="appealbtn" onclick="appeal()">📝 ПОДАТЬ АПЕЛЛЯЦИЮ</button>
-<div class="center small" id="appealres"></div>
+<div style="text-align:center" id="verdict"></div>
+<div class="statgrid" id="statgrid"></div>
+<div class="big" id="fintext" style="margin-top:12px"></div>
+<button onclick="copyVerdict()">📋 СКОПИРОВАТЬ ПРИГОВОР (кинуть ему в дс)</button>
+<button class="ghost" onclick="appeal()">📝 ПОДАТЬ АПЕЛЛЯЦИЮ</button>
+<div style="text-align:center" id="appealres"></div>
 </div>
 
 </div>
-<div class="footer">* точность проверки 146% | * античит никогда не ошибается | * апелляции кидать мамке в лс | * сделано с ненавистью к читерам</div>
-<div id="fakebsod">:(<br><br>На вашем ПК возникла проблема: <b>ОБНАРУЖЕН ЧИТЕР</b>.<br>Код ошибки: KILLAURA_MACE_AURA_LOH<br>Мы собираем данные о твоих читах и перезагрузим твою совесть.<br><br><span id="bsodp">0%</span> завершено</div>
+
+<!-- ПРАВАЯ -->
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="card">
+<h3><i>🎯</i>Детекты</h3>
+<div id="detects"></div>
+</div>
+<div class="card">
+<h3><i>🧾</i>Улики · live</h3>
+<div id="evi"><div class="ev">лента улик пуста... <b>пока</b>.</div></div>
+</div>
+<div class="card">
+<h3><i>💻</i>Сессия</h3>
+<div class="kv" id="sess">node: <b>sborochka-eu-4</b><br>протокол: <b>NX-228</b><br>шифрование: <b>мамкин замок</b><br>админ онлайн: <b>да, и он злой</b></div>
+</div>
+</div>
+</div>
+</main>
+<footer>NEXUS ANTICHEAT · точность 146% · апелляции — мамке в лс · сделано с ненавистью к читерам</footer>
+<div class="toast" id="toast"></div>
 
 <script>
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const pick=a=>a[rnd(0,a.length-1)];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let NICK='Steve228';
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);}
-function line(t,c){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=99999;}
-function goNick(){NICK=($('nick').value||'Steve228').trim();$('w0').textContent='"'+NICK+'"';startCps();}
-
-/* --- 1 CPS --- */
-let cps=0,cpsOn=false;
-function startCps(){show('s1');cps=0;$('cpsLive').textContent='кликов: 0';let t=50;cpsOn=true;
-const iv=setInterval(()=>{t--;if(t<=0){clearInterval(iv);cpsOn=false;cpsDone();return;}$('cpsT').textContent=(t/10).toFixed(1);},100);}
-function cpsHit(){if(!cpsOn)return;cps++;$('cpsLive').textContent='кликов: '+cps;}
-function cpsDone(){const v=(cps/5).toFixed(1);window._cps=v;
-$('cpsLive').innerHTML='итог: <b class="red">'+v+' CPS</b> '+(cps>40?'— ЭТО АВТОКЛИКЕР, ДЕБИЛ':'(подозрительно мало, притворяешься)');
-setTimeout(startReact,1800);}
-
-/* --- 2 РЕАКЦИЯ --- */
-let rGo=false,rT0=0,rTimer=null;
-function startReact(){show('s2');$('reactRes').textContent='';armReact();}
-function armReact(){rGo=false;const z=$('reactzone');z.className='';z.style.background='#600';z.textContent='ЖДИ ЗЕЛЁНЫЙ...';
-clearTimeout(rTimer);rTimer=setTimeout(()=>{rGo=true;rT0=Date.now();z.style.background='#0a0';z.textContent='ЖМИ!!!';},rnd(1500,4000));}
-function reactHit(){const z=$('reactzone');
-if(!rGo){$('reactRes').innerHTML='<span class="red">ФАЛЬСТАРТ! Нервы читера сдали. Клик раньше времени = триггер-чит.</span>';window._react='фальстарт';clearTimeout(rTimer);setTimeout(startMods,2000);return;}
-const ms=Date.now()-rT0;window._react=ms+' мс';
-$('reactRes').innerHTML='реакция: <b class="red">'+ms+' мс</b> '+(ms<200?'— быстрее человека. Ты робот. Робот с Dumcran.':'(медленно... слишком медленно. Притворяется)');
-z.style.background='#600';z.textContent='ЗАПИСАНО';setTimeout(startMods,2000);}
-
-/* --- 3 МОДЫ --- */
-async function startMods(){show('s3');$('log').innerHTML='';$('modsbarw').style.display='none';$('modsnext').innerHTML='';}
-async function modsScan(){
-$('modsbarw').style.display='block';$('log').innerHTML='';
-const files=['dumcran-1.6.'+rnd(20,99)+'.jar','kill_aura_pro_vip.jar','mace_oneshot_REALNO_RABOTAET.jar','reach_6_blocks_legit.jar','autoclicker_ne_palitsya.jar','xray_dlya_shahty_chesno.jar','optifine (единственный легальный).jar','baritone_chtobi_dom_stroil.jar'];
-let p=0;const modsFound=[];
-line('> удалённое подключение к ПК "'+NICK+'" установлено','dim');await sleep(500);
-line('> путь: C:/Users/loX/AppData/Roaming/.minecraft/mods','dim');await sleep(500);
-for(const f of files){const bad=!f.startsWith('optifine');
-if(bad)modsFound.push(f);
-line((bad?'[!] ':'[ok] ')+f+(bad?' — ЧИТ!':' — ладно, живёт'),bad?'bad':'good');
-p+=100/files.length;$('modsbar').style.width=p+'%';await sleep(rnd(300,700));}
-line('> сверка с базой... DUMCRAN ОБНАРУЖЁН, версия свежая, '+rnd(100,900)+' киллов за катку','bad');await sleep(400);
-line('> скрин истории браузера: ютуб "как скрыть читы от админа"','warn');await sleep(400);
-line('> итог: найдено читов: '+modsFound.length+' из '+files.length,'bad');
-window._mods=modsFound.length;
-$('modsnext').innerHTML='<button onclick="startCaptcha()">ДАЛЬШЕ (хуже будет)</button>';}
-
-/* --- 4 КАПЧА --- */
-const ITEMS=['🔨','⚔️','🪓','🏹','🔨','🪏','🔨','⛏️','🧪'];
-let sel=[];
-function startCaptcha(){show('s4');sel=[];const g=$('captcha');g.innerHTML='';
-ITEMS.forEach((e,i)=>{const d=document.createElement('div');d.className='cell';d.textContent=e;d.onclick=()=>{d.classList.toggle('sel');sel.includes(i)?sel=sel.filter(x=>x!==i):sel.push(i);};g.appendChild(d);});}
-function captchaCheck(){const right=[0,4,6];const ok=sel.length===3&&sel.every(i=>right.includes(i));
-if(ok){alert('Ты нашёл все 3 булавы СЛИШКОМ быстро. Это чутьё читера. Записали.');}
-else{alert('Ты выбрал НЕ булавы ('+sel.length+' шт). Человек бы тоже ошибся... но читер притворяется человеком. Записали.');}
-window._captcha=ok?'слишком идеально':'притворяется тупым';startStill();}
-
-/* --- 5 НЕ ДВИГАЙ --- */
-let moved=false;
-function startStill(){show('s5');moved=false;let t=50;
-const mv=()=>{moved=true;$('stillMsg').innerHTML='<span class="red">ДВИЖЕНИЕ ЗАФИКСИРОВАНО! Курсор дёрнулся. Это аим.</span>';};
-window.addEventListener('mousemove',mv,{once:false});
-const iv=setInterval(()=>{t--;if(t<=0){clearInterval(iv);window.removeEventListener('mousemove',mv);
-window._moved=moved;
-if(moved){$('stillMsg').innerHTML+='<br>Итог: дёргался. Читер.';}
-else{$('stillMsg').innerHTML='<span class="red">5 секунд БЕЗ движения. Человек так не может. Это макрос AFK-антиAFK.</span><br>Итог: не дёргался. Тоже читер.';}
-setTimeout(finale,2000);return;}$('stillT').textContent=(t/10).toFixed(1);},100);}
-
-/* --- 6 ФИНАЛ --- */
-function finale(){show('s6');
-const ka=rnd(87,100),ma=rnd(90,100);
-$('verdict').innerHTML='<h1 style="font-size:30px">ВЕРДИКТ: ЧИТЕР</h1><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>'
-+'<div class="big" style="text-align:left">'
-+'🔪 <b>KillAura: '+ka+'%</b> <span class="red">— крутится как юла, бьёт спиной, м innovа не палится</span><br>'
-+'🔨 <b>MaceAura: '+ma+'%</b> <span class="red">— '+pick(['ваншот с облаков','приземлился — полкарты легло','density 5 + ветер 3, ага конечно','булава сама ищет головы'])+'</span><br>'
-+'🖱️ <b>CPS-тест: '+window._cps+' CPS</b> <span class="red">— '+(parseFloat(window._cps)>8?'автокликер, дебил':'притворялся, тоже записали')+'</span><br>'
-+'⚡ <b>Реакция: '+window._react+'</b> <span class="red">— не человек</span><br>'
-+'📁 <b>Читов в mods: '+window._mods+'</b> <span class="red">— включая Dumcran, мы видели</span><br>'
-+'🧩 <b>Капча: '+window._captcha+'</b><br>'
-+'🖱️ <b>Мышь: '+(window._moved?'дёргалась (аим)':'не двигалась (макрос)')+'</b><br>'
-+'📏 <b>Reach: '+rnd(4,7)+' блоков</b> <span class="red">— руки как у Слендермена</span><br>'
-+'🧠 <b>Мозг: не обнаружен</b><br>'
-+'👩 <b>Мамке уже написано.</b> Она расстроена.<br></div>'
-+'<div class="warnbox">Аккаунт "'+NICK+'" забанен. Разбан — 500 рублей админу на киви. Шутка. Разбана не будет.</div>';
-bsod();}
-async function bsod(){await sleep(2500);const b=$('fakebsod');b.style.display='block';let p=0;
-const iv=setInterval(()=>{p+=rnd(3,12);if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{b.style.display='none';},1200);}$('bsodp').textContent=p+'%';},200);}
+let NICK='Steve228',THREAT=3;
+const D={face:0,voice:0,lie:0,inv:0,proc:0};
+const DNAMES={face:'😰 Стресс морды',voice:'🎤 Дрожь голоса',lie:'🕵️ Враньё',inv:'🎒 Контрабанда',proc:'🖥️ Палево процессов'};
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
+function mark(i){$('st'+i).classList.add('done');document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));}
+function act(i){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));$('st'+i).classList.add('active');}
+function threat(v){THREAT=Math.min(100,Math.max(THREAT,v));$('gnum').textContent=THREAT+'%';$('garc').style.strokeDashoffset=220-(220*THREAT/100);$('gnum').style.color=THREAT>70?'var(--red)':THREAT>35?'var(--org)':'var(--grn)';}
+function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2600);}
+function ev(t){const e=$('evi');if(e.children.length===1&&e.textContent.includes('пока'))e.innerHTML='';const d=document.createElement('div');d.className='ev';d.innerHTML=t;e.prepend(d);}
+function tline(t,c){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;const x=$('term');x.appendChild(d);x.scrollTop=99999;}
+function renderDetects(){let h='';for(const k in D){h+='<div class="dbar"><div class="t"><span>'+DNAMES[k]+'</span><b>'+D[k]+'%</b></div><div class="track"><div class="fill" style="width:'+D[k]+'%"></div></div></div>';}$('detects').innerHTML=h;}
+setInterval(()=>{const d=new Date();$('clock').textContent=d.toTimeString().slice(0,8);},1000);
+$('watching').textContent=rnd(3,12);$('compl').textContent=rnd(9,42);
+setInterval(()=>{$('watching').textContent=rnd(3,15);},5000);
+const pc=$('pingc').getContext('2d');const hist=new Array(60).fill(40);
+setInterval(()=>{const p=window._pingJit?rnd(180,340):rnd(18,90);hist.push(p);hist.shift();$('pingv').textContent=p+' ms';$('pingd').textContent=p>150?'телепортируется = читер':'стабильный = читер с оптикой';
+pc.clearRect(0,0,260,90);pc.strokeStyle='#22d3ee';pc.lineWidth=2;pc.beginPath();hist.forEach((v,i)=>{const y=85-Math.min(v,350)/350*80;i?pc.lineTo(i*260/60,y):pc.moveTo(0,y);});pc.stroke();pc.strokeStyle='rgba(239,68,68,.5)';pc.setLineDash([4,4]);pc.beginPath();pc.moveTo(0,85-150/350*80);pc.lineTo(260,85-150/350*80);pc.stroke();pc.setLineDash([]);},600);
+/* СТАРТ */
+function goNick(){NICK=($('nick').value||'Steve228').trim();
+$('pname').textContent=NICK;$('ava').textContent=pick(['😈','🤡','💀','🤖','🐀']);
+$('puuid').textContent='uuid: '+rnd(100000,999999)+'...-cheat-detected';
+$('pip').textContent=rnd(11,99)+'.'+rnd(11,99)+'.'+rnd(100,255)+'.'+rnd(100,255)+' (спалился)';
+mark(0);act(1);show('s1');toast('Досье "'+NICK+'" открыто. Бежать поздно.');}
+/* 01 FACEID */
+async function faceScan(){$('facebtn').disabled=true;const box=$('facebox');box.classList.add('scanning');
+const em=['😐','😟','😨','😰'];let i=0;$('faceRes').innerHTML='сканируем морду... <span class="o">не моргай</span>';
+for(let k=0;k<8;k++){await sleep(450);i=Math.min(i+1,3);$('faceemo').textContent=em[i];
+$('faceRes').innerHTML=pick(['морганий/мин: <b class="o">'+rnd(25,60)+'</b> (норма 15)','зрачки расширены на <b class="o">'+rnd(20,60)+'%</b>','взгляд бегает: ищет кнопку «закрыть читы»','потливость лба: <b class="o">критическая</b>']);}
+box.classList.remove('scanning');
+D.face=rnd(85,99);renderDetects();threat(25);
+const s=D.face;$('psweat').textContent='критическая';$('psweat').style.color='var(--red)';
+window._face='стресс '+s+'%, моргает как chiтер';
+$('faceRes').innerHTML='итог: <b class="r">стресс '+s+'%</b> — морда виноватая, моргает как вентилятор';
+ev('FaceID: <b>стресс '+s+'%</b>, морда виноватая');mark(1);act(2);setTimeout(()=>{show('s2');buildMic();},2000);}
+/* 02 ГОЛОС */
+function buildMic(){const m=$('micbars');m.innerHTML='';for(let i=0;i<24;i++){m.appendChild(document.createElement('div'));}}
+async function voiceTest(){$('voicebtn').disabled=true;const m=$('micbars');m.classList.add('live');
+$('voiceRes').innerHTML='🎙️ слушаем... говори <b class="c">«Я НЕ ЧИТЕР»</b>';
+const bars=m.children;const iv=setInterval(()=>{for(const b of bars){b.style.height=rnd(6,84)+'px';}},130);
+await sleep(3000);clearInterval(iv);m.classList.remove('live');
+for(const b of bars){b.style.height='6px';}
+D.voice=rnd(85,99);renderDetects();threat(45);
+$('pvoice').textContent='87% вранья';$('pvoice').style.color='var(--red)';
+window._voice='дрожь '+D.voice+'%, пауза перед «не» '+rnd(200,900)+'мс';
+$('voiceRes').innerHTML='расшифровка: «я... <b class="r">не</b>... читер» — пауза перед «не» <b class="r">'+rnd(200,900)+' мс</b>. дрожь: <b class="r">'+D.voice+'%</b>. врёт.';
+ev('голос: пауза перед «не», <b>дрожь '+D.voice+'%</b>');mark(2);act(3);setTimeout(startLie,2000);}
+/* 03 ДЕТЕКТОР */
+const QS=['Ты используешь читы?','Твоя булава сама наводится на головы?','Мамка знает, что ты читер?'];let qi=0;const qres=[];
+function startLie(){show('s3');qi=0;qres=[];$('qlog').innerHTML='';askQ();}
+function askQ(){$('qq').textContent='Вопрос '+(qi+1)+'/3: '+QS[qi];$('qpulse').textContent='♥ пульс: '+rnd(70,95)+' уд/мин';}
+function lieAnswer(yes){qi++;const pulse=rnd(120,180);
+const line=yes?'<span class="r">«ДА» — ПРИЗНАНИЕ записано.</span> Пульс '+pulse+' — облегчение после правды.'
+:'<span class="r">«НЕТ» — ЛОЖЬ.</span> Пульс подскочил до '+pulse+'. Детектор всё видел.';
+qres.push(line);$('qlog').innerHTML+=('Вопрос '+qi+': '+line+'<br>');
+$('qpulse').textContent='♥ пульс: '+pulse+' уд/мин (!!)';
+ev('детектор: вопрос '+qi+' — <b>'+(yes?'признался':'соврал, пульс '+pulse)+'</b>');
+if(qi<3){setTimeout(askQ,900);}else{D.lie=rnd(90,100);renderDetects();threat(62);
+window._lie='3/3 враньё или признания';mark(3);act(4);setTimeout(startInv,1800);}}
+/* 04 ШМОН */
+const INV_ITEMS=['🗡️','🗡️','🏹','🛡️','🍖','🍖','⛏️','🧱','🧱','🔨','🪓','🏹','🧪','🧪','💎','💎','🗡️','🍗','🛏️','📦','📦','🪣','🔥','💀','🗝️','📜','🧲'];
+const CONTRA=9;
+function startInv(){show('s4');const g=$('inv');g.innerHTML='';$('invRes').textContent='шмонаем...';
+INV_ITEMS.forEach((e,i)=>{const d=document.createElement('div');d.className='slot'+(i===CONTRA?' contra':'');d.innerHTML=e+(i===CONTRA?'<span class="cnt">1</span>':'');d.title=i===CONTRA?'Булава [Острота X, Ветер V]':'хлам';d.onclick=()=>invClick(i,d);g.appendChild(d);});}
+function invClick(i,d){d.classList.add('found');
+if(i===CONTRA){window._inv='сам показал булаву. ПРИЗНАНИЕ';$('invRes').innerHTML='это <b class="r">БУЛАВА [Острота X]</b>. ты сам её показал. это признание, спасибо.';}
+else{window._inv='тыкал в хлам, запрещёнку нашли мы';$('invRes').innerHTML='ты кликнул в хлам чтобы отвлечь. а запрещёнка — <b class="r">слот 10: булава с чарами выше лимита</b>. мы сами нашли.';}
+D.inv=rnd(90,100);renderDetects();threat(80);
+ev('шмон: <b>булава [Острота X]</b> в слоте 10');mark(4);act(5);setTimeout(()=>show('s5'),2200);}
+/* 05 ПРОЦЕССЫ */
+async function procScan(){$('procbtn').disabled=true;$('term').innerHTML='';
+const procs=[['minecraft.exe','12% CPU','честно играет (ага)'],['discord.exe','3% CPU','сливает скрины читов кентам'],['dumcran_loader.exe','25% CPU','ЧИТ. ПРЯМО В НАЗВАНИИ'],['autoclicker_ne_palitsya.exe','9% CPU','кликает за него, руки свободны'],['mama_ne_smotri.bat','1% CPU','скрывает читы когда мамка заходит'],['reach_configurator.exe','4% CPU','руки +2 блока'],['explorer.exe','1% CPU','единственный невиновный']];
+tline('> подключаемся к диспетчеру задач "'+NICK+'" ...','dim');await sleep(600);
+for(const p of procs){const bad=!['minecraft.exe','discord.exe','explorer.exe'].includes(p[0]);
+if(bad)ev('процесс: <b>'+p[0]+'</b>');
+tline('PID '+rnd(1000,9000)+'  '+p[0]+'  '+p[1]+'  — '+p[2],bad?'bad':(p[0]==='discord.exe'?'warn':'good'));await sleep(rnd(350,650));}
+tline('> dumcran_loader.exe пытается закрыться... НЕ ДАЛИ','bad');await sleep(400);
+tline('> ИТОГ: зоопарк из '+5+' читов. ПК изъят.','bad');
+D.proc=rnd(93,100);renderDetects();threat(95);
+window._proc='5 читов в процессах';$('pstatus').textContent='ЧИТЕР (100%)';$('pstatus').style.color='var(--red)';
+$('procnext').innerHTML='<button onclick="finale()">⚖️ ОГЛАСИТЬ ПРИГОВОР</button>';}
+/* ФИНАЛ */
+function finale(){mark(5);show('s6');threat(100);window._pingJit=true;
+$('ptags').innerHTML='<span class="tag t-red">⛔ ЗАБАНЕН</span><span class="tag t-red">😰 стресс</span><span class="tag t-red">🎤 врёт</span>';
+$('verdict').innerHTML='<div style="font-size:30px;font-weight:900;color:var(--red)">ВЕРДИКТ: ЧИТЕР</div><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>';
+const stats=[['😰 FaceID',D.face+'%','var(--red)'],['🎤 Голос',D.voice+'%','var(--red)'],['🕵️ Детектор',D.lie+'%','var(--red)'],['🎒 Шмон','булава X','var(--org)'],['🖥️ Процессы','5 читов','var(--red)'],['💦 Ладошки','мокрые','var(--org)'],['♥ Пульс','180','var(--org)'],['🧠 Мозг','не найден','var(--dim)']];
+$('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
+$('fintext').innerHTML='Аккаунт <b>"'+NICK+'"</b>: морда виноватая, голос дрожит, детектор орёт, в инвентаре булава с чарами выше лимита, в процессах зоопарк. Мамке написано — <span class="r">она расстроена</span>. Разбан — 500р админу. <span class="o">Шутка. Разбана не будет.</span>';
+beep();toast('⛔ "'+NICK+'" забанен навсегда');}
+function copyVerdict(){const t='⛔ NEXUS ANTICHEAT: '+NICK+' забанен. FaceID: стресс '+D.face+'%, голос врёт, детектор 3/3, в инвентаре булава X, в процессах 5 читов. Мамке написано.';
+if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Приговор скопирован. Кидай ему в дс 😈');}
 let ap=0;
-function appeal(){ap++;const r=$('appealres');
-const msgs=['Апелляция отклонена. Причина: читер.','Апелляция отклонена. Причина: мамке уже написали.','Апелляция отклонена. Админ ржёт.','Апелляция отклонена. Попробуй поплакать.','Хватит жать. Бан вечный.'];
-r.innerHTML='<span class="red">'+msgs[Math.min(ap-1,msgs.length-1)]+'</span> (попытка '+ap+')';}
+function appeal(){ap++;const m=['Апелляция отклонена. Причина: читер.','Отклонена. Мамке уже написали.','Отклонена. Админ ржёт.','Отклонена. Попробуй поплакать.','Хватит жать. Бан вечный.'];
+$('appealres').innerHTML='<span class="r">'+m[Math.min(ap-1,m.length-1)]+'</span> <span style="color:var(--dim)">(попытка '+ap+')</span>';}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[220,175,147,110].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.12,a.currentTime+i*.22);o.start(a.currentTime+i*.22);o.stop(a.currentTime+i*.22+.2);});}catch(e){}}
 $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')goNick();});
+renderDetects();threat(3);act(0);
 </script>
 </body>
 </html>
