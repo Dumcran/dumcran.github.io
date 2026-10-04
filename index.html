@@ -58,21 +58,16 @@ button:disabled{opacity:.4;cursor:wait;box-shadow:none}
 @keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .big{font-size:14px;line-height:1.7;color:#c4cbe4;margin-bottom:10px}
 .big b{color:#fff}.r{color:var(--red)}.g{color:var(--grn)}.o{color:var(--org)}.c{color:var(--cyan)}
-.timer{font-size:38px;text-align:center;color:var(--org);font-weight:900;margin:8px 0;font-family:monospace}
-/* faceid */
-.facebox{position:relative;width:230px;height:280px;margin:14px auto;border:2px dashed var(--cyan);border-radius:18px;background:#05070d;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden}
+.facebox{position:relative;width:230px;max-width:100%;height:280px;margin:14px auto;border:2px dashed var(--cyan);border-radius:18px;background:#05070d;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden}
 .facebox .scanline{position:absolute;left:0;right:0;height:3px;background:var(--cyan);box-shadow:0 0 16px var(--cyan);top:-5px;display:none}
 .facebox.scanning .scanline{display:block;animation:scan 1.4s linear infinite}
 @keyframes scan{from{top:-5px}to{top:100%}}
-.facebox .corner{position:absolute;width:26px;height:26px;border:3px solid var(--cyan)}
+.facebox .corner{position:absolute;width:26px;height:26px;border:3px solid var(--cyan);z-index:2}
 .corner.tl{top:8px;left:8px;border-right:none;border-bottom:none}.corner.tr{top:8px;right:8px;border-left:none;border-bottom:none}
 .corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}.corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
-/* mic */
+.facebox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
 .micbars{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:90px;margin:12px 0;background:#05070d;border:1px solid var(--line);border-radius:10px;padding:12px}
 .micbars div{width:12px;background:linear-gradient(180deg,var(--cyan),var(--mag));border-radius:4px;height:6px;transition:height .12s}
-.micbars.live div{animation:mb .3s infinite alternate}
-@keyframes mb{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
-/* lie */
 .qbox{background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:10px;text-align:center}
 .qbox .q{font-size:19px;font-weight:800;margin-bottom:6px}
 .qbox .pulse{font-family:monospace;color:var(--org);font-size:13px;margin-bottom:12px}
@@ -80,7 +75,6 @@ button:disabled{opacity:.4;cursor:wait;box-shadow:none}
 .qbtns .yes{background:linear-gradient(90deg,#059669,#34d399)}
 .qbtns .no{background:linear-gradient(90deg,#e11d48,#f97316)}
 .qlog{font-size:13px;margin-top:10px;line-height:2}
-/* inventory */
 .inv{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:12px;background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:12px}
 .slot{background:#141a30;border:2px solid #2a3458;border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,3vw,30px);cursor:pointer;position:relative;transition:.15s}
 .slot:hover{border-color:var(--cyan);transform:scale(1.08)}
@@ -115,7 +109,7 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 
 <div class="rail" id="rail">
 <div class="step" id="st0"><b>00 · Досье</b>идентификация</div>
-<div class="step" id="st1"><b>01 · FaceID</b>морда лица</div>
+<div class="step" id="st1"><b>01 · FaceID</b>реальная вебка</div>
 <div class="step" id="st2"><b>02 · Голос</b>скажи что чист</div>
 <div class="step" id="st3"><b>03 · Детектор лжи</b>3 вопроса</div>
 <div class="step" id="st4"><b>04 · Шмон</b>инвентарь</div>
@@ -123,7 +117,6 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 </div>
 
 <div class="grid">
-<!-- ЛЕВАЯ -->
 <div style="display:flex;flex-direction:column;gap:16px">
 <div class="card">
 <h3><i>👤</i>Досье подозреваемого</h3>
@@ -134,6 +127,7 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 <div style="margin-top:10px">
 <div class="prow"><span>IP-адрес</span><b id="pip">—.—.—.—</b></div>
 <div class="prow"><span>Клиент</span><b>Fabric 1.21.11</b></div>
+<div class="prow"><span>Вебка</span><b id="pcam">—</b></div>
 <div class="prow"><span>Потливость ладошек</span><b id="psweat">—</b></div>
 <div class="prow"><span>Дрожь голоса</span><b id="pvoice">—</b></div>
 <div class="prow"><span>Статус</span><b id="pstatus" style="color:var(--org)">ПОДОЗРИТЕЛЬНЫЙ</b></div>
@@ -160,22 +154,22 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 </div>
 </div>
 
-<!-- ЦЕНТР -->
 <div class="card" style="min-height:560px">
 <h3><i>🔬</i>Центр проверок</h3>
 
 <div class="screen on" id="s0">
-<div class="big">Аккаунт помечен: <b class="r">KILLAURA + MACE-AURA</b>, версия <b class="c">1.21.11</b>.<br>Жалоб: <b class="o" id="compl">—</b> · Репортов «он ваще ебанутый»: <b class="o">17</b>.<br><br>Введи ник для протокола. Дальше — 5 новых проверок: камера, голос, детектор лжи, шмон и процессы.</div>
+<div class="big">Аккаунт помечен: <b class="r">KILLAURA + MACE-AURA</b>, версия <b class="c">1.21.11</b>.<br>Жалоб: <b class="o" id="compl">—</b> · Репортов «он ваще ебанутый»: <b class="o">17</b>.<br><br>Введи ник для протокола. Дальше — 5 проверок: <b>реальная вебка</b>, голос, детектор лжи, шмон и процессы.</div>
 <input id="nick" placeholder="ник подозреваемого..." maxlength="16">
 <button onclick="goNick()">▶ ОТКРЫТЬ ДОСЬЕ</button>
 <div class="hex" style="margin-top:14px">session_key: <b>0xDEAD_BEEF_CHEAT</b> · node: <b>sborochka-eu-4</b> · точность: <b>146%</b></div>
 </div>
 
 <div class="screen" id="s1">
-<div class="big"><b>01 · FACEID.</b> Нейросеть смотрит тебе в глаза и видит <span class="r">вину</span>.<br>Расположи морду в рамке и нажми кнопку. Моргание чаще 20 раз/мин = <span class="o">нервный читер</span>.</div>
-<div class="facebox" id="facebox"><span id="faceemo">😐</span><div class="scanline"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div></div>
-<div class="big" style="text-align:center" id="faceRes">камера даже не нужна — мы и так всё видим</div>
-<button onclick="faceScan()" id="facebtn">📷 ВКЛЮЧИТЬ СКАНИРОВАНИЕ МОРДЫ</button>
+<div class="big"><b>01 · FACEID (LIVE).</b> Сейчас реально включится <b class="r">твоя вебка</b> — смотри в объектив и не моргай.<br>Запретил доступ или нет камеры = <span class="o">прячешь морду</span>. Морда в кадре = <span class="r">анализируем стресс</span>. В конце делаем снимок — он идёт в дело.</div>
+<div class="facebox" id="facebox"><video id="cam" autoplay playsinline muted style="display:none"></video><span id="faceemo">😐</span><div class="scanline"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div></div>
+<div class="big" style="text-align:center" id="faceRes">нажми кнопку и разреши доступ к камере. мы подождём. мы умеем ждать.</div>
+<div id="shotwrap" style="display:none;text-align:center;margin-top:10px"><div style="font-size:12px;color:var(--dim)">📸 снимок морды приобщён к делу:</div><canvas id="shot" width="230" height="170" style="border:2px solid var(--red);border-radius:10px;margin-top:6px;max-width:100%"></canvas></div>
+<button onclick="faceScan()" id="facebtn">📷 ВКЛЮЧИТЬ ВЕБКУ И СКАНИРОВАТЬ МОРДУ</button>
 </div>
 
 <div class="screen" id="s2">
@@ -216,7 +210,6 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 
 </div>
 
-<!-- ПРАВАЯ -->
 <div style="display:flex;flex-direction:column;gap:16px">
 <div class="card">
 <h3><i>🎯</i>Детекты</h3>
@@ -228,7 +221,7 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 </div>
 <div class="card">
 <h3><i>💻</i>Сессия</h3>
-<div class="kv" id="sess">node: <b>sborochka-eu-4</b><br>протокол: <b>NX-228</b><br>шифрование: <b>мамкин замок</b><br>админ онлайн: <b>да, и он злой</b></div>
+<div class="kv">node: <b>sborochka-eu-4</b><br>протокол: <b>NX-228</b><br>шифрование: <b>мамкин замок</b><br>админ онлайн: <b>да, и он злой</b></div>
 </div>
 </div>
 </div>
@@ -241,7 +234,7 @@ const $=id=>document.getElementById(id);
 const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const pick=a=>a[rnd(0,a.length-1)];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let NICK='Steve228',THREAT=3;
+let NICK='Steve228',THREAT=3,camStream=null;
 const D={face:0,voice:0,lie:0,inv:0,proc:0};
 const DNAMES={face:'😰 Стресс морды',voice:'🎤 Дрожь голоса',lie:'🕵️ Враньё',inv:'🎒 Контрабанда',proc:'🖥️ Палево процессов'};
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
@@ -258,29 +251,46 @@ setInterval(()=>{$('watching').textContent=rnd(3,15);},5000);
 const pc=$('pingc').getContext('2d');const hist=new Array(60).fill(40);
 setInterval(()=>{const p=window._pingJit?rnd(180,340):rnd(18,90);hist.push(p);hist.shift();$('pingv').textContent=p+' ms';$('pingd').textContent=p>150?'телепортируется = читер':'стабильный = читер с оптикой';
 pc.clearRect(0,0,260,90);pc.strokeStyle='#22d3ee';pc.lineWidth=2;pc.beginPath();hist.forEach((v,i)=>{const y=85-Math.min(v,350)/350*80;i?pc.lineTo(i*260/60,y):pc.moveTo(0,y);});pc.stroke();pc.strokeStyle='rgba(239,68,68,.5)';pc.setLineDash([4,4]);pc.beginPath();pc.moveTo(0,85-150/350*80);pc.lineTo(260,85-150/350*80);pc.stroke();pc.setLineDash([]);},600);
-/* СТАРТ */
 function goNick(){NICK=($('nick').value||'Steve228').trim();
 $('pname').textContent=NICK;$('ava').textContent=pick(['😈','🤡','💀','🤖','🐀']);
 $('puuid').textContent='uuid: '+rnd(100000,999999)+'...-cheat-detected';
 $('pip').textContent=rnd(11,99)+'.'+rnd(11,99)+'.'+rnd(100,255)+'.'+rnd(100,255)+' (спалился)';
 mark(0);act(1);show('s1');toast('Досье "'+NICK+'" открыто. Бежать поздно.');}
-/* 01 FACEID */
-async function faceScan(){$('facebtn').disabled=true;const box=$('facebox');box.classList.add('scanning');
-const em=['😐','😟','😨','😰'];let i=0;$('faceRes').innerHTML='сканируем морду... <span class="o">не моргай</span>';
-for(let k=0;k<8;k++){await sleep(450);i=Math.min(i+1,3);$('faceemo').textContent=em[i];
-$('faceRes').innerHTML=pick(['морганий/мин: <b class="o">'+rnd(25,60)+'</b> (норма 15)','зрачки расширены на <b class="o">'+rnd(20,60)+'%</b>','взгляд бегает: ищет кнопку «закрыть читы»','потливость лба: <b class="o">критическая</b>']);}
+/* 01 FACEID — РЕАЛЬНАЯ ВЕБКА */
+async function faceScan(){
+$('facebtn').disabled=true;const box=$('facebox');box.classList.add('scanning');
+let cam=false;
+try{
+if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))throw 'noapi';
+camStream=await navigator.mediaDevices.getUserMedia({video:{width:640},audio:false});
+const v=$('cam');v.srcObject=camStream;v.style.display='block';$('faceemo').style.display='none';cam=true;
+$('pcam').textContent='включена, морда в кадре';$('pcam').style.color='var(--grn)';
+$('faceRes').innerHTML='камера <span class="g">включена</span>. смотри в объектив. не моргай. мы записываем.';
+ev('FaceID: <b>вебка включена, морда в кадре</b>');
+}catch(e){
+$('pcam').textContent='нет / запрещена = прячется';$('pcam').style.color='var(--red)';
+$('faceRes').innerHTML='вебка <span class="r">недоступна</span> — запретил доступ или камеры нет. прячешь морду? <b class="r">записали.</b> анализируем по запаху...';
+ev('FaceID: <b>вебки нет — прячет морду</b>');
+}
+await sleep(900);
+const lines=cam?['морганий/мин: <b class="o">'+rnd(25,60)+'</b> (норма 15)','зрачки расширены на <b class="o">'+rnd(20,60)+'%</b>','взгляд бегает: ищет кнопку «закрыть читы»','потливость лба: <b class="o">критическая</b>','улыбка нервная: <b class="o">виноватая</b>','смотрит мимо камеры: <b class="o">читает бинды читов</b>']
+:['камеры нет, но стресс слышен <b class="o">по клаве</b>','стучит по столу: <b class="o">нервы</b>','дышит часто: микрофон не нужен, и так слышно','тишина в ответ: <b class="o">молчание = согласие</b>'];
+const em=['😐','😟','😨','😰'];let ei=0;
+for(let k=0;k<8;k++){await sleep(450);if(!cam){ei=Math.min(ei+1,3);$('faceemo').textContent=em[ei];}$('faceRes').innerHTML=pick(lines);}
 box.classList.remove('scanning');
-D.face=rnd(85,99);renderDetects();threat(25);
-const s=D.face;$('psweat').textContent='критическая';$('psweat').style.color='var(--red)';
-window._face='стресс '+s+'%, моргает как chiтер';
-$('faceRes').innerHTML='итог: <b class="r">стресс '+s+'%</b> — морда виноватая, моргает как вентилятор';
-ev('FaceID: <b>стресс '+s+'%</b>, морда виноватая');mark(1);act(2);setTimeout(()=>{show('s2');buildMic();},2000);}
+if(cam){try{const v=$('cam'),c=$('shot');c.getContext('2d').drawImage(v,0,0,c.width,c.height);$('shotwrap').style.display='block';}catch(e){}
+if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}}
+D.face=cam?rnd(88,99):rnd(92,100);renderDetects();threat(25);
+$('psweat').textContent='критическая';$('psweat').style.color='var(--red)';
+window._face=cam?'морда в кадре, стресс '+D.face+'%, снимок в деле':'вебки нет, прячется, стресс '+D.face+'%';
+$('faceRes').innerHTML='итог: <b class="r">стресс '+D.face+'%</b> — '+(cam?'морда виноватая, снимок приобщён к делу 📸':'камеры нет = прячешь морду = виновен вдвойне');
+ev('FaceID: <b>стресс '+D.face+'%</b>'+(cam?' — снимок в деле':' — без вебки'));mark(1);act(2);setTimeout(()=>{show('s2');buildMic();},2600);}
 /* 02 ГОЛОС */
 function buildMic(){const m=$('micbars');m.innerHTML='';for(let i=0;i<24;i++){m.appendChild(document.createElement('div'));}}
-async function voiceTest(){$('voicebtn').disabled=true;const m=$('micbars');m.classList.add('live');
+async function voiceTest(){$('voicebtn').disabled=true;const m=$('micbars');
 $('voiceRes').innerHTML='🎙️ слушаем... говори <b class="c">«Я НЕ ЧИТЕР»</b>';
 const bars=m.children;const iv=setInterval(()=>{for(const b of bars){b.style.height=rnd(6,84)+'px';}},130);
-await sleep(3000);clearInterval(iv);m.classList.remove('live');
+await sleep(3000);clearInterval(iv);
 for(const b of bars){b.style.height='6px';}
 D.voice=rnd(85,99);renderDetects();threat(45);
 $('pvoice').textContent='87% вранья';$('pvoice').style.color='var(--red)';
@@ -288,13 +298,13 @@ window._voice='дрожь '+D.voice+'%, пауза перед «не» '+rnd(200
 $('voiceRes').innerHTML='расшифровка: «я... <b class="r">не</b>... читер» — пауза перед «не» <b class="r">'+rnd(200,900)+' мс</b>. дрожь: <b class="r">'+D.voice+'%</b>. врёт.';
 ev('голос: пауза перед «не», <b>дрожь '+D.voice+'%</b>');mark(2);act(3);setTimeout(startLie,2000);}
 /* 03 ДЕТЕКТОР */
-const QS=['Ты используешь читы?','Твоя булава сама наводится на головы?','Мамка знает, что ты читер?'];let qi=0;const qres=[];
-function startLie(){show('s3');qi=0;qres=[];$('qlog').innerHTML='';askQ();}
+const QS=['Ты используешь читы?','Твоя булава сама наводится на головы?','Мамка знает, что ты читер?'];let qi=0;
+function startLie(){show('s3');qi=0;$('qlog').innerHTML='';askQ();}
 function askQ(){$('qq').textContent='Вопрос '+(qi+1)+'/3: '+QS[qi];$('qpulse').textContent='♥ пульс: '+rnd(70,95)+' уд/мин';}
 function lieAnswer(yes){qi++;const pulse=rnd(120,180);
 const line=yes?'<span class="r">«ДА» — ПРИЗНАНИЕ записано.</span> Пульс '+pulse+' — облегчение после правды.'
 :'<span class="r">«НЕТ» — ЛОЖЬ.</span> Пульс подскочил до '+pulse+'. Детектор всё видел.';
-qres.push(line);$('qlog').innerHTML+=('Вопрос '+qi+': '+line+'<br>');
+$('qlog').innerHTML+=('Вопрос '+qi+': '+line+'<br>');
 $('qpulse').textContent='♥ пульс: '+pulse+' уд/мин (!!)';
 ev('детектор: вопрос '+qi+' — <b>'+(yes?'признался':'соврал, пульс '+pulse)+'</b>');
 if(qi<3){setTimeout(askQ,900);}else{D.lie=rnd(90,100);renderDetects();threat(62);
@@ -317,7 +327,7 @@ for(const p of procs){const bad=!['minecraft.exe','discord.exe','explorer.exe'].
 if(bad)ev('процесс: <b>'+p[0]+'</b>');
 tline('PID '+rnd(1000,9000)+'  '+p[0]+'  '+p[1]+'  — '+p[2],bad?'bad':(p[0]==='discord.exe'?'warn':'good'));await sleep(rnd(350,650));}
 tline('> dumcran_loader.exe пытается закрыться... НЕ ДАЛИ','bad');await sleep(400);
-tline('> ИТОГ: зоопарк из '+5+' читов. ПК изъят.','bad');
+tline('> ИТОГ: зоопарк из 5 читов. ПК изъят.','bad');
 D.proc=rnd(93,100);renderDetects();threat(95);
 window._proc='5 читов в процессах';$('pstatus').textContent='ЧИТЕР (100%)';$('pstatus').style.color='var(--red)';
 $('procnext').innerHTML='<button onclick="finale()">⚖️ ОГЛАСИТЬ ПРИГОВОР</button>';}
@@ -327,7 +337,7 @@ $('ptags').innerHTML='<span class="tag t-red">⛔ ЗАБАНЕН</span><span cla
 $('verdict').innerHTML='<div style="font-size:30px;font-weight:900;color:var(--red)">ВЕРДИКТ: ЧИТЕР</div><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>';
 const stats=[['😰 FaceID',D.face+'%','var(--red)'],['🎤 Голос',D.voice+'%','var(--red)'],['🕵️ Детектор',D.lie+'%','var(--red)'],['🎒 Шмон','булава X','var(--org)'],['🖥️ Процессы','5 читов','var(--red)'],['💦 Ладошки','мокрые','var(--org)'],['♥ Пульс','180','var(--org)'],['🧠 Мозг','не найден','var(--dim)']];
 $('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
-$('fintext').innerHTML='Аккаунт <b>"'+NICK+'"</b>: морда виноватая, голос дрожит, детектор орёт, в инвентаре булава с чарами выше лимита, в процессах зоопарк. Мамке написано — <span class="r">она расстроена</span>. Разбан — 500р админу. <span class="o">Шутка. Разбана не будет.</span>';
+$('fintext').innerHTML='Аккаунт <b>"'+NICK+'"</b>: '+window._face+'. голос дрожит, детектор орёт, в инвентаре булава с чарами выше лимита, в процессах зоопарк. Мамке написано — <span class="r">она расстроена</span>. Разбан — 500р админу. <span class="o">Шутка. Разбана не будет.</span>';
 beep();toast('⛔ "'+NICK+'" забанен навсегда');}
 function copyVerdict(){const t='⛔ NEXUS ANTICHEAT: '+NICK+' забанен. FaceID: стресс '+D.face+'%, голос врёт, детектор 3/3, в инвентаре булава X, в процессах 5 читов. Мамке написано.';
 if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Приговор скопирован. Кидай ему в дс 😈');}
