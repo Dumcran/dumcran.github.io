@@ -12,19 +12,28 @@ body{background:radial-gradient(1200px 600px at 20% -10%,#1b2450 0%,transparent 
 header{position:sticky;top:0;z-index:50;background:rgba(11,14,26,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--mag));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(34,211,238,.5)}
 header h1{font-size:18px;letter-spacing:2px}header h1 span{color:var(--cyan)}
-.hbadge{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:5px 12px;color:var(--dim);background:var(--panel)}
+.hbadge{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:5px 12px;color:var(--dim);background:var(--panel);user-select:none}
 .hbadge b{color:var(--grn)}.hdot{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:6px;box-shadow:0 0 8px var(--grn);animation:pl 1.5s infinite}
 @keyframes pl{50%{opacity:.4}}
 main{max-width:1280px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px}
 .rail{display:flex;gap:8px;flex-wrap:wrap}
-.step{flex:1;min-width:130px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--dim);position:relative;overflow:hidden}
+.step{flex:1;min-width:130px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--dim);position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .1s,opacity .2s;user-select:none}
+.step:hover{border-color:rgba(34,211,238,.4);transform:translateY(-1px)}
 .step b{display:block;font-size:13px;color:var(--txt);margin-bottom:2px}
 .step.active{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.25);color:var(--cyan)}
 .step.active b{color:#fff}
 .step.done{border-color:var(--grn)}.step.done b{color:var(--grn)}
 .step.done::after{content:'✔';position:absolute;right:10px;top:8px;color:var(--grn)}
+.step.locked{opacity:.45;cursor:not-allowed}
+.step.locked:hover{border-color:var(--line);transform:none}
+
 .grid{display:grid;grid-template-columns:320px 1fr 300px;gap:16px}
-@media(max-width:1050px){.grid{grid-template-columns:1fr}}
+@media(max-width:1050px){
+  .grid{display:flex;flex-direction:column}
+  .grid-center{order:1}
+  .grid-left{order:2}
+  .grid-right{order:3}
+}
 .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .card h3{font-size:12px;letter-spacing:2px;color:var(--dim);margin-bottom:12px;text-transform:uppercase}
 .card h3 i{font-style:normal;margin-right:6px}
@@ -37,11 +46,15 @@ main{max-width:1280px;margin:0 auto;padding:20px;display:flex;flex-direction:col
 .t-org{background:rgba(251,146,60,.15);color:#fdba74;border:1px solid rgba(251,146,60,.4)}
 input{width:100%;background:#0a0d18;border:1px solid var(--line);color:#fff;padding:12px;border-radius:10px;font-size:15px;outline:none;margin-top:10px}
 input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(34,211,238,.3)}
-button{background:linear-gradient(90deg,#e11d48,#f97316);color:#fff;border:none;padding:13px;font-size:15px;font-weight:800;cursor:pointer;border-radius:10px;width:100%;margin-top:12px;letter-spacing:1px}
+button{background:linear-gradient(90deg,#e11d48,#f97316);color:#fff;border:none;padding:13px;font-size:15px;font-weight:800;cursor:pointer;border-radius:10px;width:100%;margin-top:12px;letter-spacing:1px;transition:filter .15s,box-shadow .15s,opacity .2s}
 button:hover{filter:brightness(1.15);box-shadow:0 0 20px rgba(249,115,22,.4)}
 button.ghost{background:transparent;border:1px solid var(--cyan);color:var(--cyan)}
 button.ghost:hover{background:rgba(34,211,238,.1);box-shadow:0 0 14px rgba(34,211,238,.3)}
-button:disabled{opacity:.4;cursor:wait;box-shadow:none}
+button:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.6);box-shadow:none}
+
+.next-btn{background:linear-gradient(90deg,#059669,#10b981)!important;margin-top:14px;box-shadow:0 0 16px rgba(16,185,129,.35);animation:pb 1.5s infinite}
+@keyframes pb{0%,100%{box-shadow:0 0 12px rgba(16,185,129,.3)}50%{box-shadow:0 0 24px rgba(16,185,129,.75)}}
+
 .gauge{display:flex;flex-direction:column;align-items:center}
 .gnum{font-size:40px;font-weight:900;color:var(--red);text-shadow:0 0 18px rgba(239,68,68,.6)}
 .glab{font-size:11px;color:var(--dim);letter-spacing:2px}
@@ -51,23 +64,32 @@ button:disabled{opacity:.4;cursor:wait;box-shadow:none}
 .fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--org),var(--red));transition:width 1s ease}
 #term{background:#05070d;border:1px solid var(--line);border-radius:10px;height:250px;overflow-y:auto;padding:10px;font-family:Consolas,monospace;font-size:12px;line-height:1.75}
 #term .warn{color:var(--org)}#term .bad{color:var(--red);font-weight:bold}#term .good{color:var(--grn)}#term .dim{color:#4b5470}#term .cy{color:var(--cyan)}
-#pingc{width:100%;height:90px;background:#05070d;border:1px solid var(--line);border-radius:10px}
+#pingc{width:100%;height:90px;background:#05070d;border:1px solid var(--line);border-radius:10px;display:block}
 .ev{font-size:12px;color:var(--dim);padding:7px 0;border-bottom:1px dashed var(--line)}
 .ev b{color:var(--org)}
 .screen{display:none}.screen.on{display:block;animation:fd .35s}
 @keyframes fd{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 .big{font-size:14px;line-height:1.7;color:#c4cbe4;margin-bottom:10px}
 .big b{color:#fff}.r{color:var(--red)}.g{color:var(--grn)}.o{color:var(--org)}.c{color:var(--cyan)}
-.facebox{position:relative;width:230px;max-width:100%;height:280px;margin:14px auto;border:2px dashed var(--cyan);border-radius:18px;background:#05070d;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden}
-.facebox .scanline{position:absolute;left:0;right:0;height:3px;background:var(--cyan);box-shadow:0 0 16px var(--cyan);top:-5px;display:none}
+
+/* faceid */
+.facebox{position:relative;width:250px;height:280px;margin:14px auto;border:2px dashed var(--cyan);border-radius:18px;background:#05070d;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden}
+.facebox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.facebox span{z-index:1}
+.facebox .scanline{position:absolute;left:0;right:0;height:3px;background:var(--cyan);box-shadow:0 0 16px var(--cyan);top:-5px;display:none;z-index:4}
 .facebox.scanning .scanline{display:block;animation:scan 1.4s linear infinite}
 @keyframes scan{from{top:-5px}to{top:100%}}
-.facebox .corner{position:absolute;width:26px;height:26px;border:3px solid var(--cyan);z-index:2}
+.facebox .corner{position:absolute;width:26px;height:26px;border:3px solid var(--cyan);z-index:4}
 .corner.tl{top:8px;left:8px;border-right:none;border-bottom:none}.corner.tr{top:8px;right:8px;border-left:none;border-bottom:none}
 .corner.bl{bottom:8px;left:8px;border-right:none;border-top:none}.corner.br{bottom:8px;right:8px;border-left:none;border-top:none}
-.facebox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+
+/* mic */
 .micbars{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:90px;margin:12px 0;background:#05070d;border:1px solid var(--line);border-radius:10px;padding:12px}
-.micbars div{width:12px;background:linear-gradient(180deg,var(--cyan),var(--mag));border-radius:4px;height:6px;transition:height .12s}
+.micbars div{width:12px;background:linear-gradient(180deg,var(--cyan),var(--mag));border-radius:4px;height:6px;transition:height .08s}
+.micbars.live div{animation:none}
+audio{width:100%;margin-top:12px;outline:none;border-radius:20px;filter:invert(.9) hue-rotate(180deg)}
+
+/* lie */
 .qbox{background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:10px;text-align:center}
 .qbox .q{font-size:19px;font-weight:800;margin-bottom:6px}
 .qbox .pulse{font-family:monospace;color:var(--org);font-size:13px;margin-bottom:12px}
@@ -75,14 +97,17 @@ button:disabled{opacity:.4;cursor:wait;box-shadow:none}
 .qbtns .yes{background:linear-gradient(90deg,#059669,#34d399)}
 .qbtns .no{background:linear-gradient(90deg,#e11d48,#f97316)}
 .qlog{font-size:13px;margin-top:10px;line-height:2}
+
+/* inventory */
 .inv{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:12px;background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:12px}
-.slot{background:#141a30;border:2px solid #2a3458;border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,3vw,30px);cursor:pointer;position:relative;transition:.15s}
+.inv.locked{pointer-events:none;opacity:.85}
+.slot{background:#141a30;border:2px solid #2a3458;border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,3vw,30px);cursor:pointer;position:relative;transition:.15s;user-select:none}
 .slot:hover{border-color:var(--cyan);transform:scale(1.08)}
 .slot.contra{border-color:var(--mag);box-shadow:0 0 10px rgba(232,121,249,.6)}
 .slot.found{border-color:var(--red);box-shadow:0 0 14px var(--red);animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .slot .cnt{position:absolute;bottom:2px;right:5px;font-size:11px;color:#fff;text-shadow:1px 1px #000;font-family:monospace}
-.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:12px}
 .stat{background:#0a0d18;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
 .stat .v{font-size:22px;font-weight:900;font-family:monospace}
 .stat .l{font-size:11px;color:var(--dim);margin-top:4px}
@@ -93,7 +118,7 @@ button:disabled{opacity:.4;cursor:wait;box-shadow:none}
 .kv b{color:var(--cyan)}
 footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 #appealres{margin-top:10px;font-size:14px}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--panel);border:1px solid var(--red);border-radius:10px;padding:12px 18px;font-size:13px;display:none;z-index:60;box-shadow:0 0 20px rgba(239,68,68,.4)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--panel);border:1px solid var(--red);border-radius:10px;padding:12px 18px;font-size:13px;display:none;z-index:60;box-shadow:0 0 20px rgba(239,68,68,.4);pointer-events:none}
 </style>
 </head>
 <body>
@@ -104,20 +129,23 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 <div class="hbadge"><span class="hdot"></span>сервер <b>ONLINE</b></div>
 <div class="hbadge">🕐 <b id="clock">--:--:--</b></div>
 <div class="hbadge">👁 следим: <b id="watching">1</b></div>
+<div class="hbadge" id="sndbtn" style="cursor:pointer" onclick="toggleSound()">🔊 звук: <b id="sndtxt">ВКЛ</b></div>
 </header>
 <main>
 
 <div class="rail" id="rail">
 <div class="step" id="st0"><b>00 · Досье</b>идентификация</div>
-<div class="step" id="st1"><b>01 · FaceID</b>реальная вебка</div>
-<div class="step" id="st2"><b>02 · Голос</b>скажи что чист</div>
-<div class="step" id="st3"><b>03 · Детектор лжи</b>3 вопроса</div>
-<div class="step" id="st4"><b>04 · Шмон</b>инвентарь</div>
-<div class="step" id="st5"><b>05 · Процессы</b>диспетчер</div>
+<div class="step locked" id="st1"><b>01 · FaceID</b>морда лица</div>
+<div class="step locked" id="st2"><b>02 · Голос</b>скажи что чист</div>
+<div class="step locked" id="st3"><b>03 · Детектор лжи</b>3 вопроса</div>
+<div class="step locked" id="st4"><b>04 · Шмон</b>инвентарь</div>
+<div class="step locked" id="st5"><b>05 · Процессы</b>диспетчер</div>
+<div class="step locked" id="st6"><b>06 · Приговор</b>бан навсегда</div>
 </div>
 
 <div class="grid">
-<div style="display:flex;flex-direction:column;gap:16px">
+<!-- ЛЕВАЯ КОЛОНКА (Досье, Датчик, Пинг) -->
+<div class="grid-left" style="display:flex;flex-direction:column;gap:16px">
 <div class="card">
 <h3><i>👤</i>Досье подозреваемого</h3>
 <div style="display:flex;gap:14px;align-items:center">
@@ -127,7 +155,6 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 <div style="margin-top:10px">
 <div class="prow"><span>IP-адрес</span><b id="pip">—.—.—.—</b></div>
 <div class="prow"><span>Клиент</span><b>Fabric 1.21.11</b></div>
-<div class="prow"><span>Вебка</span><b id="pcam">—</b></div>
 <div class="prow"><span>Потливость ладошек</span><b id="psweat">—</b></div>
 <div class="prow"><span>Дрожь голоса</span><b id="pvoice">—</b></div>
 <div class="prow"><span>Статус</span><b id="pstatus" style="color:var(--org)">ПОДОЗРИТЕЛЬНЫЙ</b></div>
@@ -149,49 +176,67 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 <div class="card">
 <h3><i>📶</i>Пинг · live</h3>
 <canvas id="pingc" width="260" height="90"></canvas>
-<div class="prow"><span>Сейчас</span><b id="pingv">— ms</b></div>
+<div class="prow" style="margin-top:6px"><span>Сейчас</span><b id="pingv">— ms</b></div>
 <div class="prow"><span>Диагноз</span><b id="pingd" style="color:var(--org)">лагает = палится</b></div>
 </div>
 </div>
 
-<div class="card" style="min-height:560px">
+<!-- ЦЕНТР (Экраны проверок) -->
+<div class="card grid-center" style="min-height:560px">
 <h3><i>🔬</i>Центр проверок</h3>
 
+<!-- ШАГ 0 -->
 <div class="screen on" id="s0">
-<div class="big">Аккаунт помечен: <b class="r">KILLAURA + MACE-AURA</b>, версия <b class="c">1.21.11</b>.<br>Жалоб: <b class="o" id="compl">—</b> · Репортов «он ваще ебанутый»: <b class="o">17</b>.<br><br>Введи ник для протокола. Дальше — 5 проверок: <b>реальная вебка</b>, голос, детектор лжи, шмон и процессы.</div>
-<input id="nick" placeholder="ник подозреваемого..." maxlength="16">
-<button onclick="goNick()">▶ ОТКРЫТЬ ДОСЬЕ</button>
+<div class="big">Аккаунт помечен: <b class="r">KILLAURA + MACE-AURA</b>, версия <b class="c">1.21.11</b>.<br>Жалоб: <b class="o" id="compl">—</b> · Репортов «он ваще ебанутый»: <b class="o">17</b>.<br><br>Введи ник для протокола. Дальше — 5 проверок: камера, голос, детектор лжи, шмон и процессы.</div>
+<input id="nick" placeholder="ник подозреваемого..." maxlength="16" autofocus>
+<button onclick="goNick()" id="nickbtn">▶ ОТКРЫТЬ ДОСЬЕ</button>
 <div class="hex" style="margin-top:14px">session_key: <b>0xDEAD_BEEF_CHEAT</b> · node: <b>sborochka-eu-4</b> · точность: <b>146%</b></div>
 </div>
 
+<!-- ШАГ 1: ВЕБКА -->
 <div class="screen" id="s1">
-<div class="big"><b>01 · FACEID (LIVE).</b> Сейчас реально включится <b class="r">твоя вебка</b> — смотри в объектив и не моргай.<br>Запретил доступ или нет камеры = <span class="o">прячешь морду</span>. Морда в кадре = <span class="r">анализируем стресс</span>. В конце делаем снимок — он идёт в дело.</div>
-<div class="facebox" id="facebox"><video id="cam" autoplay playsinline muted style="display:none"></video><span id="faceemo">😐</span><div class="scanline"></div><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div></div>
-<div class="big" style="text-align:center" id="faceRes">нажми кнопку и разреши доступ к камере. мы подождём. мы умеем ждать.</div>
-<div id="shotwrap" style="display:none;text-align:center;margin-top:10px"><div style="font-size:12px;color:var(--dim)">📸 снимок морды приобщён к делу:</div><canvas id="shot" width="230" height="170" style="border:2px solid var(--red);border-radius:10px;margin-top:6px;max-width:100%"></canvas></div>
-<button onclick="faceScan()" id="facebtn">📷 ВКЛЮЧИТЬ ВЕБКУ И СКАНИРОВАТЬ МОРДУ</button>
+<div class="big"><b>01 · FACEID.</b> Нейросеть смотрит тебе прямо в глаза и фиксирует <span class="r">вину</span>.<br>Включи камеру. Система сделает запись твоего лица на 3.5 секунды, и ты сможешь сразу просмотреть видео.</div>
+<div class="facebox" id="facebox">
+  <span id="faceemo">😐</span>
+  <video id="faceLive" autoplay playsinline muted style="display:none"></video>
+  <video id="facePreview" controls autoplay loop playsinline style="display:none"></video>
+  <div class="scanline"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+</div>
+<div class="big" style="text-align:center" id="faceRes">веб-камера готова. нажми кнопку и смотри в объектив.</div>
+<button onclick="faceScan()" id="facebtn">📷 ВКЛЮЧИТЬ КАМЕРУ И ЗАПИСАТЬ МОРДУ (3.5 сек)</button>
+<div id="faceNextBox"></div>
 </div>
 
+<!-- ШАГ 2: ГОЛОС -->
 <div class="screen" id="s2">
-<div class="big"><b>02 · ГОЛОС.</b> Скажи вслух: <b class="c">«Я НЕ ЧИТЕР»</b>.<br>Микрофон даже включать не надо — мы считываем дрожь по лицу. Пауза перед «не» = <span class="r">враньё</span>.</div>
+<div class="big"><b>02 · ГОЛОС.</b> Скажи громко в микрофон: <b class="c">«Я НЕ ЧИТЕР»</b>.<br>Мы запишем твой голос, покажем частоты в реальном времени, и ты сможешь сразу прослушать запись перед вынесением вердикта.</div>
 <div class="micbars" id="micbars"></div>
-<div class="big" style="text-align:center" id="voiceRes">нажми запись и говори. громко. как на допросе.</div>
-<button onclick="voiceTest()" id="voicebtn">🎤 НАЧАТЬ ЗАПИСЬ (3 сек)</button>
+<div style="text-align:center"><audio id="voicePlayer" controls style="display:none"></audio></div>
+<div class="big" style="text-align:center;margin-top:10px" id="voiceRes">микрофон наготове. нажми запись и говори громко.</div>
+<button onclick="voiceTest()" id="voicebtn">🎤 НАЧАТЬ ЗАПИСЬ ГОЛОСА (3.5 сек)</button>
+<div id="voiceNextBox"></div>
 </div>
 
+<!-- ШАГ 3: ДЕТЕКТОР ЛЖИ -->
 <div class="screen" id="s3">
 <div class="big"><b>03 · ДЕТЕКТОР ЛЖИ.</b> Отвечай честно. Датчик пульса уже на твоём стуле.<br><span class="o">«Да»</span> = признание. <span class="r">«Нет»</span> = детектор зафиксировал скачок пульса.</div>
 <div class="qbox"><div class="q" id="qq">...</div><div class="pulse" id="qpulse">♥ пульс: 72 уд/мин</div>
-<div class="qbtns"><button class="yes" onclick="lieAnswer(true)">ДА</button><button class="no" onclick="lieAnswer(false)">НЕТ</button></div></div>
+<div class="qbtns"><button class="yes" id="btnYes" onclick="lieAnswer(true)">ДА</button><button class="no" id="btnNo" onclick="lieAnswer(false)">НЕТ</button></div></div>
 <div class="qlog" id="qlog"></div>
+<div id="lieNextBox"></div>
 </div>
 
+<!-- ШАГ 4: ШМОН ИНВЕНТАРЯ -->
 <div class="screen" id="s4">
-<div class="big"><b>04 · ШМОН ИНВЕНТАРЯ.</b> Открываем твой инвентарь удалённо.<br>Найди и кликни <span class="r">ЗАПРЕЩЁННЫЙ предмет</span>. Кликнешь не туда — значит отвлекаешь.</div>
+<div class="big"><b>04 · ШМОН ИНВЕНТАРЯ.</b> Открываем твой инвентарь удалённо.<br>Найди и кликни <span class="r">ЗАПРЕЩЁННЫЙ предмет</span>. Кликнешь не туда — значит отвлекаешь следствие.</div>
 <div class="inv" id="inv"></div>
-<div class="big" style="text-align:center" id="invRes">шмонаем...</div>
+<div class="big" style="text-align:center;margin-top:10px" id="invRes">шмонаем...</div>
+<div id="invNextBox"></div>
 </div>
 
+<!-- ШАГ 5: ПРОЦЕССЫ -->
 <div class="screen" id="s5">
 <div class="big"><b>05 · СКАНЕР ПРОЦЕССОВ.</b> Читаем твой диспетчер задач.<br>Честные люди держат там только майнкрафт. Читеры — <span class="r">зоопарк</span>.</div>
 <button onclick="procScan()" id="procbtn">🖥️ РАЗРЕШИТЬ ДОСТУП К ПРОЦЕССАМ (иначе бан)</button>
@@ -199,18 +244,22 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 <div style="text-align:center" id="procnext"></div>
 </div>
 
+<!-- ШАГ 6: ВЕРДИКТ -->
 <div class="screen" id="s6">
 <div style="text-align:center" id="verdict"></div>
+<div id="finEvidence"></div>
 <div class="statgrid" id="statgrid"></div>
 <div class="big" id="fintext" style="margin-top:12px"></div>
 <button onclick="copyVerdict()">📋 СКОПИРОВАТЬ ПРИГОВОР (кинуть ему в дс)</button>
 <button class="ghost" onclick="appeal()">📝 ПОДАТЬ АПЕЛЛЯЦИЮ</button>
+<button class="ghost" style="margin-top:8px;border-color:var(--org);color:var(--org)" onclick="resetAll()">🔄 ПРОВЕРИТЬ ДРУГОГО МАМОНТА (СБРОС)</button>
 <div style="text-align:center" id="appealres"></div>
 </div>
 
 </div>
 
-<div style="display:flex;flex-direction:column;gap:16px">
+<!-- ПРАВАЯ КОЛОНКА (Детекты, Улики, Сессия) -->
+<div class="grid-right" style="display:flex;flex-direction:column;gap:16px">
 <div class="card">
 <h3><i>🎯</i>Детекты</h3>
 <div id="detects"></div>
@@ -221,7 +270,7 @@ footer{text-align:center;color:#3d4463;font-size:12px;padding:20px}
 </div>
 <div class="card">
 <h3><i>💻</i>Сессия</h3>
-<div class="kv">node: <b>sborochka-eu-4</b><br>протокол: <b>NX-228</b><br>шифрование: <b>мамкин замок</b><br>админ онлайн: <b>да, и он злой</b></div>
+<div class="kv" id="sess">node: <b>sborochka-eu-4</b><br>протокол: <b>NX-228</b><br>шифрование: <b>мамкин замок</b><br>админ онлайн: <b>да, и он злой</b></div>
 </div>
 </div>
 </div>
@@ -234,119 +283,688 @@ const $=id=>document.getElementById(id);
 const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const pick=a=>a[rnd(0,a.length-1)];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let NICK='Steve228',THREAT=3,camStream=null;
-const D={face:0,voice:0,lie:0,inv:0,proc:0};
-const DNAMES={face:'😰 Стресс морды',voice:'🎤 Дрожь голоса',lie:'🕵️ Враньё',inv:'🎒 Контрабанда',proc:'🖥️ Палево процессов'};
+
+let NICK='Steve228', THREAT=3;
+let currentStep=0, maxUnlocked=0;
+let soundEnabled=true, audioCtx=null;
+
+let faceMediaStream=null, faceVideoBlobUrl=null;
+let voiceMediaStream=null, voiceAudioBlobUrl=null;
+
+const D={face:0, voice:0, lie:0, inv:0, proc:0};
+const DNAMES={face:'😰 Стресс морды', voice:'🎤 Дрожь голоса', lie:'🕵️ Враньё', inv:'🎒 Контрабанда', proc:'🖥️ Палево процессов'};
+
+/* ЗВУКИ (WEB AUDIO API) */
+function getAudio(){
+  if(!audioCtx){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC) audioCtx=new AC();
+  }
+  if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function toggleSound(){
+  soundEnabled=!soundEnabled;
+  $('sndtxt').textContent=soundEnabled?'ВКЛ':'ВЫКЛ';
+  $('sndtxt').style.color=soundEnabled?'var(--grn)':'var(--red)';
+  toast(soundEnabled?'Звуки включены':'Звуки выключены');
+}
+function sndClick(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='triangle';o.frequency.setValueAtTime(650,a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(320,a.currentTime+.04);
+    g.gain.setValueAtTime(.07,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.04);
+    o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.04);
+  }catch(e){}
+}
+function sndBuzzer(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='sawtooth';o.frequency.setValueAtTime(140,a.currentTime);
+    g.gain.setValueAtTime(.11,a.currentTime);g.gain.linearRampToValueAtTime(.01,a.currentTime+.25);
+    o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.25);
+  }catch(e){}
+}
+function sndPulse(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='sine';o.frequency.setValueAtTime(85,a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(45,a.currentTime+.08);
+    g.gain.setValueAtTime(.22,a.currentTime);g.gain.linearRampToValueAtTime(.001,a.currentTime+.08);
+    o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.08);
+  }catch(e){}
+}
+function sndScan(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='sine';o.frequency.setValueAtTime(420,a.currentTime);
+    o.frequency.linearRampToValueAtTime(880,a.currentTime+.11);
+    g.gain.setValueAtTime(.04,a.currentTime);g.gain.linearRampToValueAtTime(.001,a.currentTime+.11);
+    o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.11);
+  }catch(e){}
+}
+function sndBan(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    [261,220,174,130].forEach((f,i)=>{
+      const o=a.createOscillator(),g=a.createGain();
+      o.type='sawtooth';o.frequency.setValueAtTime(f,a.currentTime+i*.18);
+      g.gain.setValueAtTime(.14,a.currentTime+i*.18);
+      g.gain.linearRampToValueAtTime(.001,a.currentTime+i*.18+.32);
+      o.connect(g);g.connect(a.destination);
+      o.start(a.currentTime+i*.18);o.stop(a.currentTime+i*.18+.33);
+    });
+  }catch(e){}
+}
+
+/* НАВИГАЦИЯ */
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
-function mark(i){$('st'+i).classList.add('done');document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));}
-function act(i){document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));$('st'+i).classList.add('active');}
-function threat(v){THREAT=Math.min(100,Math.max(THREAT,v));$('gnum').textContent=THREAT+'%';$('garc').style.strokeDashoffset=220-(220*THREAT/100);$('gnum').style.color=THREAT>70?'var(--red)':THREAT>35?'var(--org)':'var(--grn)';}
-function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',2600);}
-function ev(t){const e=$('evi');if(e.children.length===1&&e.textContent.includes('пока'))e.innerHTML='';const d=document.createElement('div');d.className='ev';d.innerHTML=t;e.prepend(d);}
-function tline(t,c){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;const x=$('term');x.appendChild(d);x.scrollTop=99999;}
-function renderDetects(){let h='';for(const k in D){h+='<div class="dbar"><div class="t"><span>'+DNAMES[k]+'</span><b>'+D[k]+'%</b></div><div class="track"><div class="fill" style="width:'+D[k]+'%"></div></div></div>';}$('detects').innerHTML=h;}
+function mark(i){const el=$('st'+i);if(el)el.classList.add('done');}
+function unlockStep(i){maxUnlocked=Math.max(maxUnlocked,i);updateRail();}
+
+function updateRail(){
+  for(let i=0;i<=6;i++){
+    const el=$('st'+i);if(!el)continue;
+    el.classList.toggle('locked',i>maxUnlocked);
+    el.classList.toggle('active',i===currentStep);
+  }
+}
+
+function nextStep(idx){
+  sndClick();
+  unlockStep(idx);
+  goToStep(idx);
+}
+
+function goToStep(idx){
+  currentStep=idx;
+  show('s'+idx);
+  updateRail();
+  if(idx===2)buildMic();
+  if(idx===3&&qi===0)startLie();
+  if(idx===4&&!$('inv').children.length)startInv();
+  if(idx===6)finale();
+}
+
+for(let i=0;i<=6;i++){
+  const el=$('st'+i);
+  if(el){
+    el.addEventListener('click',()=>{
+      if(i<=maxUnlocked){
+        sndClick();
+        goToStep(i);
+      }else{
+        sndBuzzer();
+        toast('Сначала пройди предыдущие проверки!');
+      }
+    });
+  }
+}
+
+function threat(v){
+  THREAT=Math.min(100,Math.max(THREAT,v));
+  $('gnum').textContent=THREAT+'%';
+  $('garc').style.strokeDashoffset=220-(220*THREAT/100);
+  $('gnum').style.color=THREAT>70?'var(--red)':THREAT>35?'var(--org)':'var(--grn)';
+}
+let toastTimer=null;
+function toast(t){
+  const x=$('toast');x.textContent=t;x.style.display='block';
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>x.style.display='none',2600);
+}
+function ev(t){
+  const e=$('evi');
+  if(e.children.length===1&&e.textContent.includes('пока'))e.innerHTML='';
+  const d=document.createElement('div');d.className='ev';d.innerHTML=t;e.prepend(d);
+}
+function tline(t,c){
+  const d=document.createElement('div');if(c)d.className=c;d.textContent=t;
+  const x=$('term');x.appendChild(d);x.scrollTop=99999;
+}
+function renderDetects(){
+  let h='';
+  for(const k in D){
+    h+='<div class="dbar"><div class="t"><span>'+DNAMES[k]+'</span><b>'+D[k]+'%</b></div><div class="track"><div class="fill" style="width:'+D[k]+'%"></div></div></div>';
+  }
+  $('detects').innerHTML=h;
+}
+
+// Часы и онлайн
 setInterval(()=>{const d=new Date();$('clock').textContent=d.toTimeString().slice(0,8);},1000);
 $('watching').textContent=rnd(3,12);$('compl').textContent=rnd(9,42);
 setInterval(()=>{$('watching').textContent=rnd(3,15);},5000);
-const pc=$('pingc').getContext('2d');const hist=new Array(60).fill(40);
-setInterval(()=>{const p=window._pingJit?rnd(180,340):rnd(18,90);hist.push(p);hist.shift();$('pingv').textContent=p+' ms';$('pingd').textContent=p>150?'телепортируется = читер':'стабильный = читер с оптикой';
-pc.clearRect(0,0,260,90);pc.strokeStyle='#22d3ee';pc.lineWidth=2;pc.beginPath();hist.forEach((v,i)=>{const y=85-Math.min(v,350)/350*80;i?pc.lineTo(i*260/60,y):pc.moveTo(0,y);});pc.stroke();pc.strokeStyle='rgba(239,68,68,.5)';pc.setLineDash([4,4]);pc.beginPath();pc.moveTo(0,85-150/350*80);pc.lineTo(260,85-150/350*80);pc.stroke();pc.setLineDash([]);},600);
-function goNick(){NICK=($('nick').value||'Steve228').trim();
-$('pname').textContent=NICK;$('ava').textContent=pick(['😈','🤡','💀','🤖','🐀']);
-$('puuid').textContent='uuid: '+rnd(100000,999999)+'...-cheat-detected';
-$('pip').textContent=rnd(11,99)+'.'+rnd(11,99)+'.'+rnd(100,255)+'.'+rnd(100,255)+' (спалился)';
-mark(0);act(1);show('s1');toast('Досье "'+NICK+'" открыто. Бежать поздно.');}
-/* 01 FACEID — РЕАЛЬНАЯ ВЕБКА */
-async function faceScan(){
-$('facebtn').disabled=true;const box=$('facebox');box.classList.add('scanning');
-let cam=false;
-try{
-if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia))throw 'noapi';
-camStream=await navigator.mediaDevices.getUserMedia({video:{width:640},audio:false});
-const v=$('cam');v.srcObject=camStream;v.style.display='block';$('faceemo').style.display='none';cam=true;
-$('pcam').textContent='включена, морда в кадре';$('pcam').style.color='var(--grn)';
-$('faceRes').innerHTML='камера <span class="g">включена</span>. смотри в объектив. не моргай. мы записываем.';
-ev('FaceID: <b>вебка включена, морда в кадре</b>');
-}catch(e){
-$('pcam').textContent='нет / запрещена = прячется';$('pcam').style.color='var(--red)';
-$('faceRes').innerHTML='вебка <span class="r">недоступна</span> — запретил доступ или камеры нет. прячешь морду? <b class="r">записали.</b> анализируем по запаху...';
-ev('FaceID: <b>вебки нет — прячет морду</b>');
+
+// Пинг и Canvas
+const pingCanvas=$('pingc');
+const pc=pingCanvas.getContext('2d');
+const hist=new Array(60).fill(40);
+function resizePing(){
+  if(pingCanvas.clientWidth)pingCanvas.width=pingCanvas.clientWidth;
 }
-await sleep(900);
-const lines=cam?['морганий/мин: <b class="o">'+rnd(25,60)+'</b> (норма 15)','зрачки расширены на <b class="o">'+rnd(20,60)+'%</b>','взгляд бегает: ищет кнопку «закрыть читы»','потливость лба: <b class="o">критическая</b>','улыбка нервная: <b class="o">виноватая</b>','смотрит мимо камеры: <b class="o">читает бинды читов</b>']
-:['камеры нет, но стресс слышен <b class="o">по клаве</b>','стучит по столу: <b class="o">нервы</b>','дышит часто: микрофон не нужен, и так слышно','тишина в ответ: <b class="o">молчание = согласие</b>'];
-const em=['😐','😟','😨','😰'];let ei=0;
-for(let k=0;k<8;k++){await sleep(450);if(!cam){ei=Math.min(ei+1,3);$('faceemo').textContent=em[ei];}$('faceRes').innerHTML=pick(lines);}
-box.classList.remove('scanning');
-if(cam){try{const v=$('cam'),c=$('shot');c.getContext('2d').drawImage(v,0,0,c.width,c.height);$('shotwrap').style.display='block';}catch(e){}
-if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}}
-D.face=cam?rnd(88,99):rnd(92,100);renderDetects();threat(25);
-$('psweat').textContent='критическая';$('psweat').style.color='var(--red)';
-window._face=cam?'морда в кадре, стресс '+D.face+'%, снимок в деле':'вебки нет, прячется, стресс '+D.face+'%';
-$('faceRes').innerHTML='итог: <b class="r">стресс '+D.face+'%</b> — '+(cam?'морда виноватая, снимок приобщён к делу 📸':'камеры нет = прячешь морду = виновен вдвойне');
-ev('FaceID: <b>стресс '+D.face+'%</b>'+(cam?' — снимок в деле':' — без вебки'));mark(1);act(2);setTimeout(()=>{show('s2');buildMic();},2600);}
-/* 02 ГОЛОС */
-function buildMic(){const m=$('micbars');m.innerHTML='';for(let i=0;i<24;i++){m.appendChild(document.createElement('div'));}}
-async function voiceTest(){$('voicebtn').disabled=true;const m=$('micbars');
-$('voiceRes').innerHTML='🎙️ слушаем... говори <b class="c">«Я НЕ ЧИТЕР»</b>';
-const bars=m.children;const iv=setInterval(()=>{for(const b of bars){b.style.height=rnd(6,84)+'px';}},130);
-await sleep(3000);clearInterval(iv);
-for(const b of bars){b.style.height='6px';}
-D.voice=rnd(85,99);renderDetects();threat(45);
-$('pvoice').textContent='87% вранья';$('pvoice').style.color='var(--red)';
-window._voice='дрожь '+D.voice+'%, пауза перед «не» '+rnd(200,900)+'мс';
-$('voiceRes').innerHTML='расшифровка: «я... <b class="r">не</b>... читер» — пауза перед «не» <b class="r">'+rnd(200,900)+' мс</b>. дрожь: <b class="r">'+D.voice+'%</b>. врёт.';
-ev('голос: пауза перед «не», <b>дрожь '+D.voice+'%</b>');mark(2);act(3);setTimeout(startLie,2000);}
-/* 03 ДЕТЕКТОР */
-const QS=['Ты используешь читы?','Твоя булава сама наводится на головы?','Мамка знает, что ты читер?'];let qi=0;
-function startLie(){show('s3');qi=0;$('qlog').innerHTML='';askQ();}
-function askQ(){$('qq').textContent='Вопрос '+(qi+1)+'/3: '+QS[qi];$('qpulse').textContent='♥ пульс: '+rnd(70,95)+' уд/мин';}
-function lieAnswer(yes){qi++;const pulse=rnd(120,180);
-const line=yes?'<span class="r">«ДА» — ПРИЗНАНИЕ записано.</span> Пульс '+pulse+' — облегчение после правды.'
-:'<span class="r">«НЕТ» — ЛОЖЬ.</span> Пульс подскочил до '+pulse+'. Детектор всё видел.';
-$('qlog').innerHTML+=('Вопрос '+qi+': '+line+'<br>');
-$('qpulse').textContent='♥ пульс: '+pulse+' уд/мин (!!)';
-ev('детектор: вопрос '+qi+' — <b>'+(yes?'признался':'соврал, пульс '+pulse)+'</b>');
-if(qi<3){setTimeout(askQ,900);}else{D.lie=rnd(90,100);renderDetects();threat(62);
-window._lie='3/3 враньё или признания';mark(3);act(4);setTimeout(startInv,1800);}}
-/* 04 ШМОН */
+window.addEventListener('resize',resizePing);
+resizePing();
+
+setInterval(()=>{
+  const w=pingCanvas.width||260;
+  const h=pingCanvas.height||90;
+  const p=window._pingJit?rnd(180,340):rnd(18,90);
+  hist.push(p);hist.shift();
+  $('pingv').textContent=p+' ms';
+  $('pingd').textContent=p>150?'телепортируется = читер':'стабильный = читер с оптикой';
+  pc.clearRect(0,0,w,h);
+  pc.strokeStyle='#22d3ee';pc.lineWidth=2;pc.beginPath();
+  hist.forEach((v,i)=>{
+    const y=(h-8)-(Math.min(v,350)/350)*(h-16);
+    const x=(i/(hist.length-1))*w;
+    i?pc.lineTo(x,y):pc.moveTo(x,y);
+  });
+  pc.stroke();
+  pc.strokeStyle='rgba(239,68,68,.5)';
+  pc.setLineDash([4,4]);pc.beginPath();
+  const ty=(h-8)-(150/350)*(h-16);
+  pc.moveTo(0,ty);pc.lineTo(w,ty);pc.stroke();pc.setLineDash([]);
+},600);
+
+/* ШАГ 0: ОТКРЫТИЕ ДОСЬЕ */
+function goNick(){
+  const val=($('nick').value||'').trim();
+  NICK=val||'Steve228';
+  sndClick();
+  $('pname').textContent=NICK;
+  $('ava').textContent=pick(['😈','🤡','💀','🤖','🐀','👽','🐗']);
+  $('puuid').textContent='uuid: '+rnd(100000,999999)+'...-cheat-detected';
+  $('pip').textContent=rnd(11,99)+'.'+rnd(11,99)+'.'+rnd(100,255)+'.'+rnd(100,255)+' (спалился)';
+  mark(0);unlockStep(1);goToStep(1);
+  toast('Досье "'+NICK+'" открыто. Бежать поздно.');
+}
+
+/* ШАГ 1: РЕАЛЬНЫЙ FACEID И ВИДЕОЗАПИСЬ */
+let faceBusy=false;
+async function faceScan(){
+  if(faceBusy)return;
+  faceBusy=true;
+  $('facebtn').disabled=true;
+  sndClick();
+
+  let camSuccess=false;
+  let chunks=[];
+  let recorder=null;
+
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    try{
+      faceMediaStream=await navigator.mediaDevices.getUserMedia({video:{width:320,height:320},audio:false});
+      const liveVideo=$('faceLive');
+      liveVideo.srcObject=faceMediaStream;
+      liveVideo.style.display='block';
+      $('faceemo').style.display='none';
+      $('facePreview').style.display='none';
+      camSuccess=true;
+
+      if(window.MediaRecorder){
+        recorder=new MediaRecorder(faceMediaStream);
+        recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+        recorder.start();
+      }
+    }catch(e){
+      console.log('Камера недоступна:',e);
+      camSuccess=false;
+    }
+  }
+
+  const box=$('facebox');
+  box.classList.add('scanning');
+  $('faceRes').innerHTML=camSuccess
+    ?'🎥 <span class="o">ИДЁТ ЗАПИСЬ ЛИЦА...</span> Смотри в камеру, не моргай!'
+    :'сканируем морду через экран... <span class="o">не моргай</span>';
+
+  const em=['😐','😟','😨','😰'];
+  for(let k=0;k<7;k++){
+    await sleep(500);
+    sndScan();
+    if(!camSuccess){
+      $('faceemo').textContent=em[Math.min(k,3)];
+    }
+    $('faceRes').innerHTML=pick([
+      'морганий/мин: <b class="o">'+rnd(25,60)+'</b> (норма 15)',
+      'зрачки расширены на <b class="o">'+rnd(20,60)+'%</b>',
+      'взгляд бегает: ищет кнопку «закрыть читы»',
+      'потливость лба: <b class="o">критическая</b>'
+    ]);
+  }
+
+  if(recorder&&recorder.state!=='inactive'){
+    await new Promise(res=>{recorder.onstop=res;recorder.stop();});
+  }
+
+  if(faceMediaStream){
+    faceMediaStream.getTracks().forEach(t=>t.stop());
+    faceMediaStream=null;
+  }
+
+  box.classList.remove('scanning');
+  $('faceLive').style.display='none';
+
+  if(chunks.length>0){
+    const blob=new Blob(chunks,{type:chunks[0].type||'video/webm'});
+    faceVideoBlobUrl=URL.createObjectURL(blob);
+    const prev=$('facePreview');
+    prev.src=faceVideoBlobUrl;
+    prev.style.display='block';
+    prev.play().catch(()=>{});
+  }else if(!camSuccess){
+    $('faceemo').style.display='block';
+    $('faceemo').textContent='😰';
+  }
+
+  sndBuzzer();
+  D.face=rnd(85,99);renderDetects();threat(25);
+  const s=D.face;
+  $('psweat').textContent='критическая';$('psweat').style.color='var(--red)';
+  window._face='стресс '+s+'%, морда виноватая';
+  $('faceRes').innerHTML='итог: <b class="r">стресс '+s+'%</b> — морда '+(camSuccess?'записана на видео! Посмотри на себя выше 👆':'виноватая, моргает как вентилятор');
+  ev('FaceID: <b>стресс '+s+'%</b>, '+(camSuccess?'видеодоказательство получено':'морда виноватая'));
+  mark(1);unlockStep(2);faceBusy=false;
+
+  $('faceNextBox').innerHTML='<button class="next-btn" onclick="nextStep(2)">▶ ПЕРЕЙТИ К ПРОВЕРКЕ ГОЛОСА (ШАГ 02)</button>';
+}
+
+/* ШАГ 2: РЕАЛЬНЫЙ МИКРОФОН И АУДИОПЛЕЕР */
+let voiceBusy=false;
+let audioLocalCtx=null, analyserNode=null, animFrameId=null;
+
+function buildMic(){
+  const m=$('micbars');
+  if(!m.children.length){
+    for(let i=0;i<24;i++){m.appendChild(document.createElement('div'));}
+  }
+}
+
+async function voiceTest(){
+  if(voiceBusy)return;
+  voiceBusy=true;
+  $('voicebtn').disabled=true;
+  sndClick();
+
+  let micSuccess=false;
+  let chunks=[];
+  let recorder=null;
+
+  const m=$('micbars');
+  m.classList.add('live');
+  $('voiceRes').innerHTML='🎙️ <span class="o">ЗАПИСЬ ПОШЛА!</span> Говори громко: <b class="c">«Я НЕ ЧИТЕР»</b>';
+
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    try{
+      voiceMediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      micSuccess=true;
+      const AC=window.AudioContext||window.webkitAudioContext;
+      audioLocalCtx=new AC();
+      const source=audioLocalCtx.createMediaStreamSource(voiceMediaStream);
+      analyserNode=audioLocalCtx.createAnalyser();
+      analyserNode.fftSize=64;
+      source.connect(analyserNode);
+
+      if(window.MediaRecorder){
+        recorder=new MediaRecorder(voiceMediaStream);
+        recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+        recorder.start();
+      }
+    }catch(e){
+      console.log('Микрофон недоступен:',e);
+      micSuccess=false;
+    }
+  }
+
+  const bars=m.children;
+  const freqData=analyserNode?new Uint8Array(analyserNode.frequencyBinCount):null;
+  const startTime=Date.now();
+  const dur=3500;
+
+  await new Promise(resolve=>{
+    function renderVisualizer(){
+      if(Date.now()-startTime>=dur){
+        resolve();
+        return;
+      }
+      if(micSuccess&&analyserNode){
+        analyserNode.getByteFrequencyData(freqData);
+        for(let i=0;i<bars.length;i++){
+          const val=freqData[i%freqData.length]||0;
+          const h=Math.max(6,Math.min(84,(val/255)*84));
+          bars[i].style.height=h+'px';
+        }
+      }else{
+        for(let i=0;i<bars.length;i++){
+          bars[i].style.height=rnd(6,84)+'px';
+        }
+      }
+      animFrameId=requestAnimationFrame(renderVisualizer);
+    }
+    renderVisualizer();
+  });
+
+  cancelAnimationFrame(animFrameId);
+
+  if(recorder&&recorder.state!=='inactive'){
+    await new Promise(res=>{recorder.onstop=res;recorder.stop();});
+  }
+
+  if(voiceMediaStream){
+    voiceMediaStream.getTracks().forEach(t=>t.stop());
+    voiceMediaStream=null;
+  }
+  if(audioLocalCtx){
+    audioLocalCtx.close().catch(()=>{});
+  }
+
+  m.classList.remove('live');
+  for(const b of bars){b.style.height='6px';}
+
+  if(chunks.length>0){
+    const blob=new Blob(chunks,{type:chunks[0].type||'audio/webm'});
+    voiceAudioBlobUrl=URL.createObjectURL(blob);
+    const p=$('voicePlayer');
+    p.src=voiceAudioBlobUrl;
+    p.style.display='inline-block';
+  }
+
+  sndBuzzer();
+  D.voice=rnd(85,99);renderDetects();threat(45);
+  $('pvoice').textContent='87% вранья';$('pvoice').style.color='var(--red)';
+  window._voice='дрожь '+D.voice+'%, пауза перед «не» '+rnd(200,900)+'мс';
+  $('voiceRes').innerHTML='расшифровка: «я... <b class="r">не</b>... читер» — пауза перед «не» <b class="r">'+rnd(200,900)+' мс</b>. дрожь: <b class="r">'+D.voice+'%</b>. '+(micSuccess?'Можешь прослушать свою запись выше 🎧':'врёт.');
+  ev('голос: пауза перед «не», <b>дрожь '+D.voice+'%</b> '+(micSuccess?'(аудиозапись сохранена)':''));
+  mark(2);unlockStep(3);voiceBusy=false;
+
+  $('voiceNextBox').innerHTML='<button class="next-btn" onclick="nextStep(3)">▶ ПЕРЕЙТИ К ДЕТЕКТОРУ ЛЖИ (ШАГ 03)</button>';
+}
+
+/* ШАГ 3: ДЕТЕКТОР ЛЖИ */
+const QS=['Ты используешь читы?','Твоя булава сама наводится на головы?','Мамка знает, что ты читер?'];
+let qi=0;const qres=[];let lieLocked=false;
+
+function startLie(){
+  qi=0;qres.length=0;$('qlog').innerHTML='';$('lieNextBox').innerHTML='';askQ();
+}
+function askQ(){
+  $('qq').textContent='Вопрос '+(qi+1)+'/3: '+QS[qi];
+  $('qpulse').textContent='♥ пульс: '+rnd(70,95)+' уд/мин';
+  sndPulse();
+  lieLocked=false;
+  $('btnYes').disabled=false;
+  $('btnNo').disabled=false;
+}
+function lieAnswer(yes){
+  if(lieLocked||qi>=QS.length)return;
+  lieLocked=true;
+  $('btnYes').disabled=true;
+  $('btnNo').disabled=true;
+  sndBuzzer();
+  qi++;
+  const pulse=rnd(125,185);
+  const line=yes
+    ?'<span class="r">«ДА» — ПРИЗНАНИЕ записано.</span> Пульс '+pulse+' — облегчение после правды.'
+    :'<span class="r">«НЕТ» — ЛОЖЬ.</span> Пульс подскочил до '+pulse+'. Детектор всё видел.';
+  qres.push(line);
+  $('qlog').innerHTML+=('Вопрос '+qi+': '+line+'<br>');
+  $('qpulse').textContent='♥ пульс: '+pulse+' уд/мин (!!)';
+  ev('детектор: вопрос '+qi+' — <b>'+(yes?'признался':'соврал, пульс '+pulse)+'</b>');
+
+  if(qi<QS.length){
+    setTimeout(askQ,900);
+  }else{
+    D.lie=rnd(90,100);renderDetects();threat(62);
+    window._lie='3/3 враньё или признания';
+    mark(3);unlockStep(4);
+    $('lieNextBox').innerHTML='<button class="next-btn" onclick="nextStep(4)">▶ ПЕРЕЙТИ К ШМОНУ ИНВЕНТАРЯ (ШАГ 04)</button>';
+  }
+}
+
+/* ШАГ 4: ШМОН ИНВЕНТАРЯ */
 const INV_ITEMS=['🗡️','🗡️','🏹','🛡️','🍖','🍖','⛏️','🧱','🧱','🔨','🪓','🏹','🧪','🧪','💎','💎','🗡️','🍗','🛏️','📦','📦','🪣','🔥','💀','🗝️','📜','🧲'];
-const CONTRA=9;
-function startInv(){show('s4');const g=$('inv');g.innerHTML='';$('invRes').textContent='шмонаем...';
-INV_ITEMS.forEach((e,i)=>{const d=document.createElement('div');d.className='slot'+(i===CONTRA?' contra':'');d.innerHTML=e+(i===CONTRA?'<span class="cnt">1</span>':'');d.title=i===CONTRA?'Булава [Острота X, Ветер V]':'хлам';d.onclick=()=>invClick(i,d);g.appendChild(d);});}
-function invClick(i,d){d.classList.add('found');
-if(i===CONTRA){window._inv='сам показал булаву. ПРИЗНАНИЕ';$('invRes').innerHTML='это <b class="r">БУЛАВА [Острота X]</b>. ты сам её показал. это признание, спасибо.';}
-else{window._inv='тыкал в хлам, запрещёнку нашли мы';$('invRes').innerHTML='ты кликнул в хлам чтобы отвлечь. а запрещёнка — <b class="r">слот 10: булава с чарами выше лимита</b>. мы сами нашли.';}
-D.inv=rnd(90,100);renderDetects();threat(80);
-ev('шмон: <b>булава [Острота X]</b> в слоте 10');mark(4);act(5);setTimeout(()=>show('s5'),2200);}
-/* 05 ПРОЦЕССЫ */
-async function procScan(){$('procbtn').disabled=true;$('term').innerHTML='';
-const procs=[['minecraft.exe','12% CPU','честно играет (ага)'],['discord.exe','3% CPU','сливает скрины читов кентам'],['dumcran_loader.exe','25% CPU','ЧИТ. ПРЯМО В НАЗВАНИИ'],['autoclicker_ne_palitsya.exe','9% CPU','кликает за него, руки свободны'],['mama_ne_smotri.bat','1% CPU','скрывает читы когда мамка заходит'],['reach_configurator.exe','4% CPU','руки +2 блока'],['explorer.exe','1% CPU','единственный невиновный']];
-tline('> подключаемся к диспетчеру задач "'+NICK+'" ...','dim');await sleep(600);
-for(const p of procs){const bad=!['minecraft.exe','discord.exe','explorer.exe'].includes(p[0]);
-if(bad)ev('процесс: <b>'+p[0]+'</b>');
-tline('PID '+rnd(1000,9000)+'  '+p[0]+'  '+p[1]+'  — '+p[2],bad?'bad':(p[0]==='discord.exe'?'warn':'good'));await sleep(rnd(350,650));}
-tline('> dumcran_loader.exe пытается закрыться... НЕ ДАЛИ','bad');await sleep(400);
-tline('> ИТОГ: зоопарк из 5 читов. ПК изъят.','bad');
-D.proc=rnd(93,100);renderDetects();threat(95);
-window._proc='5 читов в процессах';$('pstatus').textContent='ЧИТЕР (100%)';$('pstatus').style.color='var(--red)';
-$('procnext').innerHTML='<button onclick="finale()">⚖️ ОГЛАСИТЬ ПРИГОВОР</button>';}
-/* ФИНАЛ */
-function finale(){mark(5);show('s6');threat(100);window._pingJit=true;
-$('ptags').innerHTML='<span class="tag t-red">⛔ ЗАБАНЕН</span><span class="tag t-red">😰 стресс</span><span class="tag t-red">🎤 врёт</span>';
-$('verdict').innerHTML='<div style="font-size:30px;font-weight:900;color:var(--red)">ВЕРДИКТ: ЧИТЕР</div><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>';
-const stats=[['😰 FaceID',D.face+'%','var(--red)'],['🎤 Голос',D.voice+'%','var(--red)'],['🕵️ Детектор',D.lie+'%','var(--red)'],['🎒 Шмон','булава X','var(--org)'],['🖥️ Процессы','5 читов','var(--red)'],['💦 Ладошки','мокрые','var(--org)'],['♥ Пульс','180','var(--org)'],['🧠 Мозг','не найден','var(--dim)']];
-$('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
-$('fintext').innerHTML='Аккаунт <b>"'+NICK+'"</b>: '+window._face+'. голос дрожит, детектор орёт, в инвентаре булава с чарами выше лимита, в процессах зоопарк. Мамке написано — <span class="r">она расстроена</span>. Разбан — 500р админу. <span class="o">Шутка. Разбана не будет.</span>';
-beep();toast('⛔ "'+NICK+'" забанен навсегда');}
-function copyVerdict(){const t='⛔ NEXUS ANTICHEAT: '+NICK+' забанен. FaceID: стресс '+D.face+'%, голос врёт, детектор 3/3, в инвентаре булава X, в процессах 5 читов. Мамке написано.';
-if(navigator.clipboard)navigator.clipboard.writeText(t);toast('Приговор скопирован. Кидай ему в дс 😈');}
+const CONTRA=9;let invDone=false;
+
+function startInv(){
+  invDone=false;
+  $('invNextBox').innerHTML='';
+  const g=$('inv');g.className='inv';g.innerHTML='';$('invRes').textContent='шмонаем...';
+  INV_ITEMS.forEach((e,i)=>{
+    const d=document.createElement('div');
+    d.className='slot'+(i===CONTRA?' contra':'');
+    d.innerHTML=e+(i===CONTRA?'<span class="cnt">1</span>':'');
+    d.title=i===CONTRA?'Булава [Острота X, Ветер V]':'хлам';
+    d.onclick=()=>invClick(i,d);
+    g.appendChild(d);
+  });
+}
+function invClick(i,d){
+  if(invDone)return;
+  invDone=true;
+  sndClick();
+  d.classList.add('found');
+  $('inv').classList.add('locked');
+  if(i===CONTRA){
+    window._inv='сам показал булаву. ПРИЗНАНИЕ';
+    $('invRes').innerHTML='это <b class="r">БУЛАВА [Острота X]</b>. ты сам её показал. это признание, спасибо.';
+  }else{
+    window._inv='тыкал в хлам, запрещёнку нашли мы';
+    $('invRes').innerHTML='ты кликнул в хлам чтобы отвлечь. а запрещёнка — <b class="r">слот 10: булава с чарами выше лимита</b>. мы сами нашли.';
+  }
+  sndBuzzer();
+  D.inv=rnd(90,100);renderDetects();threat(80);
+  ev('шмон: <b>булава [Острота X]</b> в слоте 10');
+  mark(4);unlockStep(5);
+  $('invNextBox').innerHTML='<button class="next-btn" onclick="nextStep(5)">▶ ПЕРЕЙТИ К СКАНЕРУ ПРОЦЕССОВ (ШАГ 05)</button>';
+}
+
+/* ШАГ 5: ПРОЦЕССЫ */
+let procBusy=false;
+async function procScan(){
+  if(procBusy)return;
+  procBusy=true;
+  $('procbtn').disabled=true;
+  sndClick();
+  $('term').innerHTML='';
+  const procs=[
+    ['minecraft.exe','12% CPU','честно играет (ага)'],
+    ['discord.exe','3% CPU','сливает скрины читов кентам'],
+    ['dumcran_loader.exe','25% CPU','ЧИТ. ПРЯМО В НАЗВАНИИ'],
+    ['autoclicker_ne_palitsya.exe','9% CPU','кликает за него, руки свободны'],
+    ['mama_ne_smotri.bat','1% CPU','скрывает читы когда мамка заходит'],
+    ['reach_configurator.exe','4% CPU','руки +2 блока'],
+    ['explorer.exe','1% CPU','единственный невиновный']
+  ];
+  tline('> подключаемся к диспетчеру задач "'+NICK+'" ...','dim');
+  await sleep(600);
+  for(const p of procs){
+    const bad=!['minecraft.exe','discord.exe','explorer.exe'].includes(p[0]);
+    if(bad){
+      ev('процесс: <b>'+p[0]+'</b>');sndBuzzer();
+    }else{
+      sndClick();
+    }
+    tline('PID '+rnd(1000,9000)+'  '+p[0]+'  '+p[1]+'  — '+p[2],bad?'bad':(p[0]==='discord.exe'?'warn':'good'));
+    await sleep(rnd(300,550));
+  }
+  tline('> dumcran_loader.exe пытается закрыться... НЕ ДАЛИ','bad');
+  await sleep(400);
+  tline('> ИТОГ: зоопарк из 5 читов. ПК изъят.','bad');
+  D.proc=rnd(93,100);renderDetects();threat(95);
+  window._proc='5 читов в процессах';
+  $('pstatus').textContent='ЧИТЕР (100%)';$('pstatus').style.color='var(--red)';
+  mark(5);unlockStep(6);procBusy=false;
+  $('procnext').innerHTML='<button class="next-btn" onclick="nextStep(6)">⚖️ ОГЛАСИТЬ ПРИГОВОР</button>';
+}
+
+/* ШАГ 6: ВЕРДИКТ И ПРИОБЩЕНИЕ ВЕЩДОКОВ */
+function finale(){
+  mark(5);mark(6);threat(100);
+  window._pingJit=true;
+  $('ptags').innerHTML='<span class="tag t-red">⛔ ЗАБАНЕН</span><span class="tag t-red">😰 стресс</span><span class="tag t-red">🎤 врёт</span>';
+  $('verdict').innerHTML='<div style="font-size:30px;font-weight:900;color:var(--red)">ВЕРДИКТ: ЧИТЕР</div><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>';
+
+  let evidHtml='';
+  if(faceVideoBlobUrl||voiceAudioBlobUrl){
+    evidHtml+='<div style="background:#0a0d18;border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0;text-align:center">';
+    evidHtml+='<div style="font-size:12px;color:var(--org);font-weight:bold;letter-spacing:1px;margin-bottom:8px">📁 ИЗЪЯТЫЕ ВЕЩДОКИ ДОПРОСА:</div>';
+    if(faceVideoBlobUrl){
+      evidHtml+='<video src="'+faceVideoBlobUrl+'" controls autoplay loop playsinline style="width:160px;height:160px;border-radius:12px;object-fit:cover;border:2px solid var(--red);margin:4px auto;display:block"></video>';
+    }
+    if(voiceAudioBlobUrl){
+      evidHtml+='<div style="margin-top:8px"><audio src="'+voiceAudioBlobUrl+'" controls style="max-width:300px"></audio></div>';
+    }
+    evidHtml+='</div>';
+  }
+  $('finEvidence').innerHTML=evidHtml;
+
+  const stats=[
+    ['😰 FaceID',(D.face||96)+'%','var(--red)'],
+    ['🎤 Голос',(D.voice||92)+'%','var(--red)'],
+    ['🕵️ Детектор',(D.lie||99)+'%','var(--red)'],
+    ['🎒 Шмон','булава X','var(--org)'],
+    ['🖥️ Процессы','5 читов','var(--red)'],
+    ['💦 Ладошки','мокрые','var(--org)'],
+    ['♥ Пульс','180','var(--org)'],
+    ['🧠 Мозг','не найден','var(--dim)']
+  ];
+  $('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
+  $('fintext').innerHTML='Аккаунт <b>"'+NICK+'"</b>: морда виноватая, голос дрожит, детектор орёт, в инвентаре булава с чарами выше лимита, в процессах зоопарк. Мамке написано — <span class="r">она расстроена</span>. Разбан — 500р админу. <span class="o">Шутка. Разбана не будет.</span>';
+  sndBan();
+  toast('⛔ "'+NICK+'" забанен навсегда');
+}
+
+/* КОПИРОВАНИЕ И АПЕЛЛЯЦИЯ */
+function copyVerdict(){
+  const t='⛔ NEXUS ANTICHEAT: '+NICK+' забанен. FaceID: стресс '+(D.face||95)+'%, голос врёт, детектор 3/3, в инвентаре булава X, в процессах 5 читов. Мамке написано.';
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(()=>{
+      sndClick();toast('Приговор скопирован! Кидай ему в дс 😈');
+    }).catch(()=>fallbackCopy(t));
+  }else{
+    fallbackCopy(t);
+  }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.focus();ta.select();
+  try{
+    document.execCommand('copy');
+    sndClick();toast('Приговор скопирован! Кидай ему в дс 😈');
+  }catch(e){
+    toast('Не удалось скопировать автоматом');
+  }
+  document.body.removeChild(ta);
+}
+
 let ap=0;
-function appeal(){ap++;const m=['Апелляция отклонена. Причина: читер.','Отклонена. Мамке уже написали.','Отклонена. Админ ржёт.','Отклонена. Попробуй поплакать.','Хватит жать. Бан вечный.'];
-$('appealres').innerHTML='<span class="r">'+m[Math.min(ap-1,m.length-1)]+'</span> <span style="color:var(--dim)">(попытка '+ap+')</span>';}
-function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[220,175,147,110].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.12,a.currentTime+i*.22);o.start(a.currentTime+i*.22);o.stop(a.currentTime+i*.22+.2);});}catch(e){}}
+function appeal(){
+  ap++;sndBuzzer();
+  const m=[
+    'Апелляция отклонена. Причина: читер.',
+    'Отклонена. Мамке уже написали.',
+    'Отклонена. Админ ржёт.',
+    'Отклонена. Попробуй поплакать.',
+    'Хватит жать. Бан вечный.',
+    'Заявка перенаправлена в Спортлото.',
+    'Бан продлён на 999 лет за дерзость.'
+  ];
+  $('appealres').innerHTML='<span class="r">'+m[Math.min(ap-1,m.length-1)]+'</span> <span style="color:var(--dim)">(попытка '+ap+')</span>';
+}
+
+/* СБРОС / НОВЫЙ ПОДОЗРЕВАЕМЫЙ */
+function resetAll(){
+  sndClick();
+  NICK='Steve228';THREAT=3;currentStep=0;maxUnlocked=0;
+  qi=0;qres.length=0;ap=0;
+  faceBusy=false;voiceBusy=false;lieLocked=false;invDone=false;procBusy=false;
+  window._pingJit=false;
+
+  if(faceVideoBlobUrl){URL.revokeObjectURL(faceVideoBlobUrl);faceVideoBlobUrl=null;}
+  if(voiceAudioBlobUrl){URL.revokeObjectURL(voiceAudioBlobUrl);voiceAudioBlobUrl=null;}
+
+  for(const k in D)D[k]=0;
+
+  $('nick').value='';
+  $('pname').textContent='???';
+  $('puuid').textContent='uuid: —';
+  $('pip').textContent='—.—.—.—';
+  $('psweat').textContent='—';$('psweat').style.color='';
+  $('pvoice').textContent='—';$('pvoice').style.color='';
+  $('pstatus').textContent='ПОДОЗРИТЕЛЬНЫЙ';$('pstatus').style.color='var(--org)';
+  $('ptags').innerHTML='<span class="tag t-org">⚠ на мушке</span>';
+  $('ava').textContent='❓';
+
+  // Вебка
+  $('facebtn').disabled=false;
+  $('faceemo').style.display='block';
+  $('faceemo').textContent='😐';
+  $('faceLive').style.display='none';
+  $('facePreview').style.display='none';
+  $('faceRes').innerHTML='веб-камера готова. нажми кнопку и смотри в объектив.';
+  $('facebox').classList.remove('scanning');
+  $('faceNextBox').innerHTML='';
+
+  // Голос
+  $('voicebtn').disabled=false;
+  $('voicePlayer').style.display='none';
+  $('voiceRes').innerHTML='микрофон наготове. нажми запись и говори громко.';
+  $('voiceNextBox').innerHTML='';
+  buildMic();
+
+  // Детектор
+  $('qlog').innerHTML='';
+  $('btnYes').disabled=false;
+  $('btnNo').disabled=false;
+  $('lieNextBox').innerHTML='';
+
+  // Инвентарь
+  $('inv').innerHTML='';
+  $('inv').className='inv';
+  $('invRes').textContent='шмонаем...';
+  $('invNextBox').innerHTML='';
+
+  // Процессы
+  $('procbtn').disabled=false;
+  $('term').innerHTML='';
+  $('procnext').innerHTML='';
+
+  // Финал
+  $('verdict').innerHTML='';
+  $('finEvidence').innerHTML='';
+  $('statgrid').innerHTML='';
+  $('fintext').innerHTML='';
+  $('appealres').innerHTML='';
+
+  $('evi').innerHTML='<div class="ev">лента улик пуста... <b>пока</b>.</div>';
+
+  for(let i=0;i<=6;i++){
+    const el=$('st'+i);
+    if(el){
+      el.classList.remove('done','active');
+      if(i>0)el.classList.add('locked');
+    }
+  }
+
+  renderDetects();
+  threat(3);
+  goToStep(0);
+  toast('База очищена. Заводи следующего!');
+}
+
 $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')goNick();});
-renderDetects();threat(3);act(0);
+renderDetects();threat(3);updateRail();
 </script>
 </body>
 </html>
