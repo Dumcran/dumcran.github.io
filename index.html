@@ -1,200 +1,209 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>7K TEAM</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-  <link rel="stylesheet" href="source/styles/mycss.css">
-  <link rel="stylesheet" href="source/styles/bgvideo.css">
-
-  <link rel="apple-touch-icon" sizes="180x180" href="source/files/favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="source/files/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="source/files/favicon/favicon-16x16.png">
-  <link rel="manifest" href="source/files/favicon/site.webmanifest">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBOROCHKA ANTICHEAT — обязательная проверка игрока</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#0f0;font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+.scanlines{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,0,.03) 0 1px,transparent 1px 3px);z-index:99}
+h1{color:#f00;text-shadow:0 0 20px #f00;font-size:clamp(18px,3.5vw,36px);text-align:center;margin:10px 0;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.55}}
+.sub{color:#888;margin-bottom:16px;text-align:center;font-size:14px}
+.box{width:min(720px,95vw);border:2px solid #0f0;background:#050505;padding:22px;border-radius:8px;box-shadow:0 0 30px rgba(0,255,0,.2)}
+.screen{display:none}.screen.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+input{width:100%;background:#000;border:1px solid #0f0;color:#0f0;padding:12px;font-family:inherit;font-size:18px;border-radius:4px;outline:none;margin:10px 0}
+button{background:#f00;color:#fff;border:none;padding:14px 20px;font-family:inherit;font-size:17px;font-weight:bold;cursor:pointer;border-radius:4px;letter-spacing:1px;width:100%;margin-top:10px}
+button:hover{background:#c00;box-shadow:0 0 20px #f00}
+button.ghost{background:#111;border:1px solid #0f0;color:#0f0}
+button.ghost:hover{background:#1a1a1a}
+button:disabled{background:#444;cursor:wait;box-shadow:none}
+#log{margin-top:12px;height:220px;overflow-y:auto;background:#000;border:1px solid #333;padding:10px;font-size:13px;line-height:1.7;white-space:pre-wrap}
+#log .warn{color:#ff0}#log .bad{color:#f00;font-weight:bold}#log .good{color:#0f0}#log .dim{color:#666}
+.bar{height:22px;background:#111;border:1px solid #0f0;border-radius:4px;margin-top:12px;overflow:hidden}
+.bar>div{height:100%;width:0;background:linear-gradient(90deg,#0f0,#ff0,#f00);transition:width .2s}
+.big{font-size:15px;color:#ccc;line-height:1.8;margin:10px 0}
+.big b{color:#ff0}.big .r{color:#f00}.big .g{color:#0f0}
+#clickzone{background:#111;border:2px dashed #0f0;border-radius:8px;height:180px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;cursor:pointer;user-select:none;margin-top:12px}
+#clickzone:hover{background:#161616}
+#reactzone{background:#600;border-radius:8px;height:160px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;cursor:pointer;user-select:none;margin-top:12px;color:#fff}
+#reactzone.go{background:#0a0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.cell{background:#111;border:2px solid #333;border-radius:6px;font-size:44px;padding:18px 0;text-align:center;cursor:pointer;user-select:none}
+.cell.sel{border-color:#0f0;box-shadow:0 0 12px #0f0}
+.timer{font-size:40px;text-align:center;color:#ff0;margin:10px 0;font-weight:bold}
+.stamp{display:inline-block;border:3px solid #f00;color:#f00;font-weight:bold;font-size:26px;padding:6px 20px;transform:rotate(-8deg);margin:12px 0;letter-spacing:3px}
+.center{text-align:center}
+.red{color:#f00}.yellow{color:#ff0}.grey{color:#888}.green{color:#0f0}
+.warnbox{border:1px solid #f00;background:#1a0000;padding:12px;border-radius:6px;margin:12px 0;font-size:14px;line-height:1.7;color:#ffb0b0}
+.footer{color:#333;margin-top:20px;font-size:12px;text-align:center;max-width:700px}
+#fakebsod{position:fixed;inset:0;background:#0000aa;color:#fff;display:none;z-index:100;padding:60px;font-size:18px;line-height:2}
+.small{font-size:12px;color:#555;margin-top:8px}
+a{color:#0f0}
+</style>
 </head>
-
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="source/files/logo.png" alt="лого"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active pt-3" aria-current="page" href="/">Главная</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link pt-3" href="members.html">Участники</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link pt-3" href="videomessages.html">Кружочки</a>
-            <li class="nav-item">
-              <a class="nav-link pt-3" href="https://t.me/m6fffff">
-                <img style="width: 24px; margin-inline: 1em" src="source/files/tg.png" alt="тг">
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
+<div class="scanlines"></div>
+<h1>⚠ SBOROCHKA ANTICHEAT v9.228 ⚠</h1>
+<div class="sub">обязательная проверка игрока | minecraft 1.21.11 | отказ = автобан</div>
+<div class="box">
 
-  <section>
-    <div class="bgvideo">
-      <video src="source/files/video-bg.mp4" type="video/mp4" autoplay muted loop></video>
-      <div class="effect"></div>
-      <div class="video-text">
-        <h1><a href="https://t.me/m6fffff">голдуны<a href="https://t.me/m6fffff">
-          <img style="width: 45px" src="source/files/tg.png" alt="тг"></a></h1>
-      </div>
-      <div class="audio-control">
-        <button id="muteButton">
-          <img src="source/files/mute-icon.png" alt="Звук" width="24" id="muteIcon">
-        </button>
-      </div>
-    </div>
+<!-- 0 СТАРТ -->
+<div class="screen on" id="s0">
+<div class="warnbox">⛔ <b>ВНИМАНИЕ.</b> Аккаунт <b id="w0">игрока</b> помечен системой как <b>ПОДОЗРИТЕЛЬНЫЙ</b>.<br>
+Причины: киллаура, булава с орбиты, рич 6 блоков, мамка жаловалась.<br><br>
+Для снятия подозрений пройди <b>5 проверок</b>. Отказ от проверки = признание в читах = бан.<br>
+Время пошло. Античит не ждёт. Админ тем более.</div>
+<input id="nick" placeholder="Введи свой ник для протокола..." maxlength="16">
+<button onclick="goNick()">▶ НАЧАТЬ ПРОВЕРКУ (назад дороги нет)</button>
+<div class="small">нажимая кнопку ты соглашаешься со всем. вообще со всем.</div>
+</div>
 
-    <div class="container-fluid mt-4">
-      <div class="row">
-        <div class="col-lg-1">
-        </div>
+<!-- 1 CPS -->
+<div class="screen" id="s1">
+<div class="big"><b>ПРОВЕРКА 1/5 — CPS-ТЕСТ.</b><br>Кликай по зоне <span class="r">КАК МОЖНО БЫСТРЕЕ</span> 5 секунд.<br>Нормальный человек жмёт <span class="g">6–8 CPS</span>. Читер с автокликером — больше.</div>
+<div class="timer" id="cpsT">5.0</div>
+<div id="clickzone" onclick="cpsHit()">ЖМИ СЮДА</div>
+<div class="big center" id="cpsLive">кликов: 0</div>
+</div>
 
-        <div class="col-lg-8 col-md-12">
-          <div class="row">
+<!-- 2 РЕАКЦИЯ -->
+<div class="screen" id="s2">
+<div class="big"><b>ПРОВЕРКА 2/5 — РЕАКЦИЯ.</b><br>Зона красная — жди. Станет <span class="g">ЗЕЛЁНОЙ</span> — жми <span class="r">МГНОВЕННО</span>.<br>Читер реагирует быстрее человека. Человек тупит. Докажи что ты тупой.</div>
+<div id="reactzone" onclick="reactHit()">ЖДИ ЗЕЛЁНЫЙ...</div>
+<div class="big center" id="reactRes"></div>
+</div>
 
-            <div id="carouselExampleIndicators" class="carousel slide">
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-                  aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-                  aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-                  aria-label="Slide 3"></button>
-              </div>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <div class="d-block w-150">
-                    <div class="row">
-                      <div class="col-lg-1 col-md-1"></div>
-                      <div class="col-lg-5 col-md-5">
-                        <img src="source/images/videomessages.png" class="w-100" alt="кружочки">
-                      </div>
-                      <div class="col-lg-5 col-md-5 slide-text">
-                        <p>Первая наша черта то, что в нашем <a href="https://t.me/m6fffff">телеграм канале</a> почти все посты это ебанутые кружочки с интелекутальным контентом. На данной иллюстации можно видеть самых тупых и гениальных чуваков😈😭</p>
-                      </div>
-                      <div class="col-lg-1 col-md-1"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="d-block w-150">
-                    <div class="row">
-                      <div class="col-lg-1 col-md-1"></div>
-                      <div class="col-lg-5 col-md-5">
-                        <a href=""><img src="source/images/videomessages2.png" class="w-100" alt="кружочки2"></a>
-                      </div>
-                      <div class="col-lg-5 col-md-5 slide-text">
-                        <p>Оптимистичный и гениальный контент с нереальными идеями где наша команда творит полную хуйню и разъеб, также не стоит забывать что <a>7K TEAM</a> — это киберспортивная команда с характерным стилем и харизмой🥰💪</p>
-                      </div>
-                      <div class="col-lg-1 col-md-1"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="d-block w-150">
-                    <div class="row">
-                      <div class="col-lg-1 col-md-1"></div>
-                      <div class="col-lg-5 col-md-5">
-                        <img src="source/images/predlozka.png" class="w-100" alt="предложка">
-                      </div>
-                      <div class="col-lg-5 col-md-5 slide-text">
-                        <p>Напоследок, хотелось бы упомянуть, что у нас есть предложка — ТГ:<a href="https://t.me/webingyt"> @webingyt</a> Присылайте разъебные кружочки, фото, видео, мы посмотрим и возможно выложим!😍🥰</p>
-                      </div>
-                      <div class="col-lg-1 col-md-1"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Предыдущий</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Следующий</span>
-              </button>
-            </div>
+<!-- 3 СКРИНШЕР -->
+<div class="screen" id="s3">
+<div class="big"><b>ПРОВЕРКА 3/5 — СКРИНШЕР МОДОВ.</b><br>Сейчас мы удалённо просканируем твою папку <span class="r">.minecraft/mods</span>.<br>Не закрывай вкладку. Не удаляй Dumcran — мы уже всё видели.</div>
+<button onclick="modsScan()">📁 РАЗРЕШИТЬ СКАНИРОВАНИЕ (иначе бан)</button>
+<div class="bar" style="display:none" id="modsbarw"><div id="modsbar"></div></div>
+<div id="log"></div>
+<div class="center" id="modsnext"></div>
+</div>
 
-            <div class="col-lg-12 col-md-12 text-center mt-4">
-              <a href="videomessages.html"><button type="button" class="btn btn-outline-light btn-lg my-4">Лучшие Кружки</button></a>
-            </div>
-          </div>
-        </div>
+<!-- 4 КАПЧА -->
+<div class="screen" id="s4">
+<div class="big"><b>ПРОВЕРКА 4/5 — КАПЧА.</b><br>Выбери <span class="r">ВСЕ БУЛАВЫ</span>. Читеры булаву чуют издалека, человек путается.</div>
+<div class="grid" id="captcha"></div>
+<button class="ghost" onclick="captchaCheck()">ПОДТВЕРДИТЬ</button>
+</div>
 
-        <div class="col-lg-3 col-md-12 sidemaincont">
-          <h2>Последние разъеб кружочки</h2>
-          <div class="row px-2 dside">
-            <div class="col-lg-12 sidebar my-4">
-              <p>Расклеили анкеты из дайвинчика на улице в противогазе игра кальмара. <a
-                  href="videomessages.html#side1">Смотреть кружок>>></a></p>
-            </div>
-            <div class="col-lg-12 sidebar my-4">
-              <p>Вышел на улицу за энергосом в одной гавайской рубашечке и шортах в мороз -13 °C. <a href="videomessages.html#side2">Смотреть кружок>>></a></p>
-            </div>
-            <div class="col-lg-12 sidebar my-4">
-              <p>Толпой крикнули хуй при выходе из тралика. <a
-                  href="videomessages.html#side3">Смотреть кружок>>></a></p>
-            </div>
-            <div class="col-lg-12 sidebar my-4">
-              <p>Раздал стиля и ебанутую походку под фразу "Мне похуй". <a href="videomessages.html#side4">Смотреть кружок>>></a></p>
-            </div>
-          </div>
-        </div>
+<!-- 5 НЕ ДВИГАЙ МЫШЬ -->
+<div class="screen" id="s5">
+<div class="big"><b>ПРОВЕРКА 5/5 — ФИНАЛЬНАЯ. НЕ ДВИГАЙ МЫШЬЮ 5 СЕКУНД.</b><br>Читерские софты постоянно дёргают курсор. Сиди смирно.<br>Движение = читы. Отсутствие движения = <span class="r">подозрительно идеальные читы</span>.</div>
+<div class="timer" id="stillT">5.0</div>
+<div class="big center" id="stillMsg">замер...</div>
+</div>
 
-      </div>
-    </div>
-  </section>
+<!-- 6 ФИНАЛ -->
+<div class="screen" id="s6">
+<div class="center" id="verdict"></div>
+<div id="finlog"></div>
+<button style="background:#600" id="appealbtn" onclick="appeal()">📝 ПОДАТЬ АПЕЛЛЯЦИЮ</button>
+<div class="center small" id="appealres"></div>
+</div>
 
-  <footer class="mt-4">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-4 col-md-12 footer-text text-center">
-          <p>All Rights Reserved 2025</p>
-        </div>
-        <div class="col-lg-4 col-md-12 footer-text text-center">
-          <p><a href="https://t.me/justartjuice">Связаться с нами</a><br><a href="https://t.me/webingyt">Предложка</a><br><a href="members.html">Наша команда</a></p>
-        </div>
-        <div class="col-lg-4 col-md-12 media-links">
-          <a href="https://t.me/m6fffff"><img style="width: 40px; margin-inline: 1em" src="source/files/tg.png" alt="tg"></a>
-        </div>
-      </div>
-    </div>
-  </footer>
+</div>
+<div class="footer">* точность проверки 146% | * античит никогда не ошибается | * апелляции кидать мамке в лс | * сделано с ненавистью к читерам</div>
+<div id="fakebsod">:(<br><br>На вашем ПК возникла проблема: <b>ОБНАРУЖЕН ЧИТЕР</b>.<br>Код ошибки: KILLAURA_MACE_AURA_LOH<br>Мы собираем данные о твоих читах и перезагрузим твою совесть.<br><br><span id="bsodp">0%</span> завершено</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
-  <script>
-      const video = document.querySelector('.bgvideo video');
-      const muteButton = document.getElementById('muteButton');
-      const muteIcon = document.getElementById('muteIcon');
-      
-      video.muted = true;
-      
-      muteButton.addEventListener('click', function() {
-        video.muted = !video.muted;
-        muteIcon.src = video.muted ? 'source/files/mute-icon.png' : 'source/files/unmute-icon.png';
-      });
-  </script>
+<script>
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[rnd(0,a.length-1)];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let NICK='Steve228';
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0);}
+function line(t,c){const d=document.createElement('div');if(c)d.className=c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=99999;}
+function goNick(){NICK=($('nick').value||'Steve228').trim();$('w0').textContent='"'+NICK+'"';startCps();}
+
+/* --- 1 CPS --- */
+let cps=0,cpsOn=false;
+function startCps(){show('s1');cps=0;$('cpsLive').textContent='кликов: 0';let t=50;cpsOn=true;
+const iv=setInterval(()=>{t--;if(t<=0){clearInterval(iv);cpsOn=false;cpsDone();return;}$('cpsT').textContent=(t/10).toFixed(1);},100);}
+function cpsHit(){if(!cpsOn)return;cps++;$('cpsLive').textContent='кликов: '+cps;}
+function cpsDone(){const v=(cps/5).toFixed(1);window._cps=v;
+$('cpsLive').innerHTML='итог: <b class="red">'+v+' CPS</b> '+(cps>40?'— ЭТО АВТОКЛИКЕР, ДЕБИЛ':'(подозрительно мало, притворяешься)');
+setTimeout(startReact,1800);}
+
+/* --- 2 РЕАКЦИЯ --- */
+let rGo=false,rT0=0,rTimer=null;
+function startReact(){show('s2');$('reactRes').textContent='';armReact();}
+function armReact(){rGo=false;const z=$('reactzone');z.className='';z.style.background='#600';z.textContent='ЖДИ ЗЕЛЁНЫЙ...';
+clearTimeout(rTimer);rTimer=setTimeout(()=>{rGo=true;rT0=Date.now();z.style.background='#0a0';z.textContent='ЖМИ!!!';},rnd(1500,4000));}
+function reactHit(){const z=$('reactzone');
+if(!rGo){$('reactRes').innerHTML='<span class="red">ФАЛЬСТАРТ! Нервы читера сдали. Клик раньше времени = триггер-чит.</span>';window._react='фальстарт';clearTimeout(rTimer);setTimeout(startMods,2000);return;}
+const ms=Date.now()-rT0;window._react=ms+' мс';
+$('reactRes').innerHTML='реакция: <b class="red">'+ms+' мс</b> '+(ms<200?'— быстрее человека. Ты робот. Робот с Dumcran.':'(медленно... слишком медленно. Притворяется)');
+z.style.background='#600';z.textContent='ЗАПИСАНО';setTimeout(startMods,2000);}
+
+/* --- 3 МОДЫ --- */
+async function startMods(){show('s3');$('log').innerHTML='';$('modsbarw').style.display='none';$('modsnext').innerHTML='';}
+async function modsScan(){
+$('modsbarw').style.display='block';$('log').innerHTML='';
+const files=['dumcran-1.6.'+rnd(20,99)+'.jar','kill_aura_pro_vip.jar','mace_oneshot_REALNO_RABOTAET.jar','reach_6_blocks_legit.jar','autoclicker_ne_palitsya.jar','xray_dlya_shahty_chesno.jar','optifine (единственный легальный).jar','baritone_chtobi_dom_stroil.jar'];
+let p=0;const modsFound=[];
+line('> удалённое подключение к ПК "'+NICK+'" установлено','dim');await sleep(500);
+line('> путь: C:/Users/loX/AppData/Roaming/.minecraft/mods','dim');await sleep(500);
+for(const f of files){const bad=!f.startsWith('optifine');
+if(bad)modsFound.push(f);
+line((bad?'[!] ':'[ok] ')+f+(bad?' — ЧИТ!':' — ладно, живёт'),bad?'bad':'good');
+p+=100/files.length;$('modsbar').style.width=p+'%';await sleep(rnd(300,700));}
+line('> сверка с базой... DUMCRAN ОБНАРУЖЁН, версия свежая, '+rnd(100,900)+' киллов за катку','bad');await sleep(400);
+line('> скрин истории браузера: ютуб "как скрыть читы от админа"','warn');await sleep(400);
+line('> итог: найдено читов: '+modsFound.length+' из '+files.length,'bad');
+window._mods=modsFound.length;
+$('modsnext').innerHTML='<button onclick="startCaptcha()">ДАЛЬШЕ (хуже будет)</button>';}
+
+/* --- 4 КАПЧА --- */
+const ITEMS=['🔨','⚔️','🪓','🏹','🔨','🪏','🔨','⛏️','🧪'];
+let sel=[];
+function startCaptcha(){show('s4');sel=[];const g=$('captcha');g.innerHTML='';
+ITEMS.forEach((e,i)=>{const d=document.createElement('div');d.className='cell';d.textContent=e;d.onclick=()=>{d.classList.toggle('sel');sel.includes(i)?sel=sel.filter(x=>x!==i):sel.push(i);};g.appendChild(d);});}
+function captchaCheck(){const right=[0,4,6];const ok=sel.length===3&&sel.every(i=>right.includes(i));
+if(ok){alert('Ты нашёл все 3 булавы СЛИШКОМ быстро. Это чутьё читера. Записали.');}
+else{alert('Ты выбрал НЕ булавы ('+sel.length+' шт). Человек бы тоже ошибся... но читер притворяется человеком. Записали.');}
+window._captcha=ok?'слишком идеально':'притворяется тупым';startStill();}
+
+/* --- 5 НЕ ДВИГАЙ --- */
+let moved=false;
+function startStill(){show('s5');moved=false;let t=50;
+const mv=()=>{moved=true;$('stillMsg').innerHTML='<span class="red">ДВИЖЕНИЕ ЗАФИКСИРОВАНО! Курсор дёрнулся. Это аим.</span>';};
+window.addEventListener('mousemove',mv,{once:false});
+const iv=setInterval(()=>{t--;if(t<=0){clearInterval(iv);window.removeEventListener('mousemove',mv);
+window._moved=moved;
+if(moved){$('stillMsg').innerHTML+='<br>Итог: дёргался. Читер.';}
+else{$('stillMsg').innerHTML='<span class="red">5 секунд БЕЗ движения. Человек так не может. Это макрос AFK-антиAFK.</span><br>Итог: не дёргался. Тоже читер.';}
+setTimeout(finale,2000);return;}$('stillT').textContent=(t/10).toFixed(1);},100);}
+
+/* --- 6 ФИНАЛ --- */
+function finale(){show('s6');
+const ka=rnd(87,100),ma=rnd(90,100);
+$('verdict').innerHTML='<h1 style="font-size:30px">ВЕРДИКТ: ЧИТЕР</h1><div class="stamp">ЗАБАНЕН НАВСЕГДА</div>'
++'<div class="big" style="text-align:left">'
++'🔪 <b>KillAura: '+ka+'%</b> <span class="red">— крутится как юла, бьёт спиной, м innovа не палится</span><br>'
++'🔨 <b>MaceAura: '+ma+'%</b> <span class="red">— '+pick(['ваншот с облаков','приземлился — полкарты легло','density 5 + ветер 3, ага конечно','булава сама ищет головы'])+'</span><br>'
++'🖱️ <b>CPS-тест: '+window._cps+' CPS</b> <span class="red">— '+(parseFloat(window._cps)>8?'автокликер, дебил':'притворялся, тоже записали')+'</span><br>'
++'⚡ <b>Реакция: '+window._react+'</b> <span class="red">— не человек</span><br>'
++'📁 <b>Читов в mods: '+window._mods+'</b> <span class="red">— включая Dumcran, мы видели</span><br>'
++'🧩 <b>Капча: '+window._captcha+'</b><br>'
++'🖱️ <b>Мышь: '+(window._moved?'дёргалась (аим)':'не двигалась (макрос)')+'</b><br>'
++'📏 <b>Reach: '+rnd(4,7)+' блоков</b> <span class="red">— руки как у Слендермена</span><br>'
++'🧠 <b>Мозг: не обнаружен</b><br>'
++'👩 <b>Мамке уже написано.</b> Она расстроена.<br></div>'
++'<div class="warnbox">Аккаунт "'+NICK+'" забанен. Разбан — 500 рублей админу на киви. Шутка. Разбана не будет.</div>';
+bsod();}
+async function bsod(){await sleep(2500);const b=$('fakebsod');b.style.display='block';let p=0;
+const iv=setInterval(()=>{p+=rnd(3,12);if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{b.style.display='none';},1200);}$('bsodp').textContent=p+'%';},200);}
+let ap=0;
+function appeal(){ap++;const r=$('appealres');
+const msgs=['Апелляция отклонена. Причина: читер.','Апелляция отклонена. Причина: мамке уже написали.','Апелляция отклонена. Админ ржёт.','Апелляция отклонена. Попробуй поплакать.','Хватит жать. Бан вечный.'];
+r.innerHTML='<span class="red">'+msgs[Math.min(ap-1,msgs.length-1)]+'</span> (попытка '+ap+')';}
+$('nick').addEventListener('keydown',e=>{if(e.key==='Enter')goNick();});
+</script>
 </body>
-
 </html>
