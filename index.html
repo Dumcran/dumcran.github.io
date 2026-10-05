@@ -160,22 +160,19 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--panel);border:1px solid var(--red);border-radius:10px;padding:12px 18px;font-size:13px;display:none;z-index:60;box-shadow:0 0 20px rgba(239,68,68,.4);pointer-events:none}
 
 /* DISCORD MODAL */
-.d-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;animation:fd .2s}
-.d-box{background:#2b2d31;width:340px;border-radius:14px;padding:22px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.8);border:1px solid #3f4147;position:relative}
-.d-close-btn{position:absolute;top:10px;right:14px;background:none;border:none;color:#949ba4;font-size:18px;cursor:pointer;width:auto;margin:0;padding:4px}
-.d-close-btn:hover{color:#fff}
-.d-ava{width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,#ed4245,#f47b67);display:flex;align-items:center;justify-content:center;font-size:42px;position:relative}
-.d-ava.speaking{box-shadow:0 0 0 4px #23a55a,0 0 24px #23a55a;animation:pulse-speak .8s infinite alternate}
+.d-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;animation:fd .2s}
+.d-box{background:#2b2d31;width:350px;border-radius:14px;padding:22px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.85);border:1px solid #3f4147;position:relative}
+.d-ava{width:86px;height:86px;border-radius:50%;margin:0 auto 12px;background:#1e1f22;border:3px solid #3f4147;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.d-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.d-ava.speaking{border-color:#23a55a;box-shadow:0 0 0 4px rgba(35,165,90,.4),0 0 24px rgba(35,165,90,.8);animation:pulse-speak .8s infinite alternate}
 @keyframes pulse-speak{from{transform:scale(1)}to{transform:scale(1.06)}}
 .d-user{font-size:18px;font-weight:800;color:#f2f3f5}
 .d-sub{font-size:12px;color:#949ba4;margin-top:4px}
-.d-btns{display:flex;gap:16px;justify-content:center;margin-top:20px}
+.d-btns{display:flex;gap:24px;justify-content:center;margin-top:20px}
 .d-circle-btn{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;transition:.15s;margin:0}
-.d-accept{background:#23a55a;color:#fff}
-.d-accept:hover{background:#1d8a4a;transform:scale(1.1)}
-.d-decline{background:#da373c;color:#fff}
-.d-decline:hover{background:#a1282c;transform:scale(1.1)}
-.d-speech{font-size:13px;color:#57f287;margin-top:14px;line-height:1.5;background:#1e1f22;padding:10px;border-radius:8px;text-align:left}
+.d-accept{background:#23a55a;color:#fff;box-shadow:0 0 16px rgba(35,165,90,.4)}
+.d-accept:hover{background:#1d8a4a;transform:scale(1.08);box-shadow:0 0 22px rgba(35,165,90,.7)}
+.d-speech{font-size:13px;color:#57f287;margin-top:14px;line-height:1.5;background:#1e1f22;padding:12px;border-radius:8px;text-align:left;border-left:3px solid #23a55a}
 
 /* УВЕДОМЛЕНИЕ РОДИТЕЛЯМ */
 .mom-card{background:#060810;border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0;text-align:left}
@@ -185,19 +182,28 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <body>
 <div class="bg-grid"></div>
 
-<!-- DISCORD CALL MODAL -->
+<!-- DISCORD CALL AUDIO & MODAL -->
+<audio id="discordRingAudio" src="https://www.myinstants.com/media/sounds/discord-call-sound.mp3" loop preload="auto"></audio>
 <div class="d-overlay" id="discordModal" style="display:none">
   <div class="d-box">
-    <button class="d-close-btn" onclick="declineDiscordCall()" title="Закрыть">✕</button>
-    <div class="d-ava" id="discordAva">👿</div>
+    <div class="d-ava" id="discordAva">
+      <img id="discordAvaImg" src="https://i.ibb.co/RG1phbGn/photo-2026-10-06-07-40-39.jpg" alt="Admin Avatar">
+    </div>
     <div class="d-user" id="discordUserName">[Гл. Админ] WebingYT</div>
     <div class="d-sub" id="discordStatus">Входящий голосовой вызов Discord...</div>
     <div class="d-btns" id="discordActionBtns">
-      <button class="d-circle-btn d-accept" onclick="acceptDiscordCall()" title="Принять">📞</button>
-      <button class="d-circle-btn d-decline" onclick="declineDiscordCall()" title="Сбросить">❌</button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <button class="d-circle-btn d-accept" onclick="acceptDiscordCall()" title="Принять звонок">📞</button>
+        <span style="font-size:10px;color:#23a55a;font-weight:800;letter-spacing:0.5px">ПРИНЯТЬ</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <button class="d-circle-btn d-accept" onclick="acceptDiscordCall()" title="Тоже принять звонок">📞</button>
+        <span style="font-size:10px;color:#23a55a;font-weight:800;letter-spacing:0.5px">ТОЖЕ ПРИНЯТЬ</span>
+      </div>
     </div>
+    <div id="discordNoDeclineHint" style="font-size:11px;color:#ef4444;margin-top:12px;font-weight:600">⚠️ Сброс вызова отключён: отказ = бан по HWID</div>
     <div id="discordSpeechBox" style="display:none" class="d-speech"></div>
-    <button id="discordSkipBtn" style="display:none;margin-top:10px;background:#3f4147" onclick="declineDiscordCall()">Продолжить проверку ▶</button>
+    <button id="discordSkipBtn" style="display:none;margin-top:12px;background:#3f4147" onclick="finishDiscordCall()">Продолжить допрос ▶</button>
   </div>
 </div>
 
@@ -424,7 +430,7 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 клиент: <b>Minecraft 1.21.11</b><br>
 античит: <b>GrimAC + Vulcan + Nexus</b><br>
 hwid-lock: <b>АКТИВИРОВАН</b><br>
-модератор в сети: <b>ДА (<span id="sessAdmin">WebingYT</span>)</b>
+модератор в сети: <b style="display:inline-flex;align-items:center;gap:5px"><img id="sessAdminAva" src="" style="width:16px;height:16px;border-radius:50%;object-fit:cover;display:none" alt="Admin"> <span>онлайн (<span id="sessAdmin">Гл. Админ WebingYT</span>)</span></b>
 </div>
 </div>
 </div>
@@ -443,10 +449,51 @@ const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const pick=a=>a[rnd(0,a.length-1)];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-// 50% ШАНС: WebingYT или Dumcran
-let ADMIN_NAME = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
-if($('discordUserName')) $('discordUserName').textContent = '[Гл. Админ] ' + ADMIN_NAME;
-if($('sessAdmin')) $('sessAdmin').textContent = ADMIN_NAME;
+// КОНФИГУРАЦИЯ АДМИНИСТРАТОРОВ (50% ШАНС: WebingYT - Гл. Админ, Dumcran - Модер)
+const ADMINS = {
+  WebingYT: {
+    key: 'WebingYT',
+    name: 'WebingYT',
+    role: 'Гл. Админ',
+    fullTitle: '[Гл. Админ] WebingYT',
+    avatar: 'https://i.ibb.co/RG1phbGn/photo-2026-10-06-07-40-39.jpg',
+    speechPitch: 0.38,   // грозный, низкий роботизированный бас
+    speechRate: 0.88,    // медленный, чеканящий кибер-допрос
+    robotFreq: 75,
+    phrase: (nick) => `Ну что, ${nick}, попался? С тобой говорит Главный Администратор Вэбинг ЮТ. Думал, твой Нурсултан и Майс Аура не спалятся? Мы уже сдампили процесс твоей джавы! Лицо в вебку поверни, бан по железу и айпи уже оформлен в протоколе!`
+  },
+  Dumcran: {
+    key: 'Dumcran',
+    name: 'Dumcran',
+    role: 'Модер',
+    fullTitle: '[Модер] Dumcran',
+    avatar: 'https://i.ibb.co/1tGJZSJn/photo-2026-10-06-07-41-46.jpg',
+    speechPitch: 1.48,   // высокий механический глитч/киборг
+    speechRate: 1.20,    // быстрый, наезжающий кибер-темп
+    robotFreq: 260,
+    phrase: (nick) => `Так, ${nick}, слышишь меня? Это Модер Думкран на связи! Ты чё творишь со своей Булавой на реках? Кого ты обмануть пытаешься своим Вейпом и Метеором? Быстро микрофон включил и пояснил за читы, иначе прямо сейчас летишь в пермач!`
+  }
+};
+
+let currentAdminKey = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
+let ADMIN = ADMINS[currentAdminKey];
+let ADMIN_NAME = ADMIN.name;
+
+function updateAdminUI(){
+  ADMIN = ADMINS[currentAdminKey];
+  ADMIN_NAME = ADMIN.name;
+  if($('discordUserName')) $('discordUserName').textContent = ADMIN.fullTitle;
+  if($('discordAvaImg')) {
+    $('discordAvaImg').src = ADMIN.avatar;
+    $('discordAvaImg').alt = ADMIN.fullTitle;
+  }
+  if($('sessAdmin')) $('sessAdmin').textContent = ADMIN.role + ' ' + ADMIN.name;
+  if($('sessAdminAva')) {
+    $('sessAdminAva').src = ADMIN.avatar;
+    $('sessAdminAva').style.display = 'inline-block';
+  }
+}
+updateAdminUI();
 
 let NICK='Steve228', THREAT=14;
 let currentStep=0, maxUnlocked=0;
@@ -589,10 +636,11 @@ function sndBan(){
   }catch(e){}
 }
 
-/* СИНТЕЗАТОР ЗВОНКА DISCORD */
-let discordRingInterval=null;
-function startDiscordRingtone(){
-  if(!soundEnabled)return;
+/* ЗВОНОК DISCORD (ОФИЦИАЛЬНЫЙ АУДИО MP3 + СИНТЕЗАТОР-FALLBACK) */
+let discordSynthInterval = null;
+
+function startDiscordSynthFallback(){
+  if(!soundEnabled || discordSynthInterval) return;
   function playNote(freq,time,dur){
     try{
       const a=getAudio();if(!a)return;
@@ -613,12 +661,102 @@ function startDiscordRingtone(){
     playNote(587.33,t+0.48,0.12);
   }
   ringCycle();
-  discordRingInterval=setInterval(ringCycle,1200);
+  discordSynthInterval=setInterval(ringCycle,1200);
 }
+
+function stopDiscordSynthFallback(){
+  if(discordSynthInterval){
+    clearInterval(discordSynthInterval);
+    discordSynthInterval=null;
+  }
+}
+
+function startDiscordRingtone(){
+  if(!soundEnabled)return;
+  const audio = $('discordRingAudio');
+  if(audio){
+    audio.currentTime = 0;
+    audio.volume = 0.85;
+    const p = audio.play();
+    if(p !== undefined){
+      p.catch(err => {
+        console.warn('MP3 play blocked, starting fallback:', err);
+        startDiscordSynthFallback();
+      });
+    }
+  }else{
+    startDiscordSynthFallback();
+  }
+}
+
 function stopDiscordRingtone(){
-  if(discordRingInterval){
-    clearInterval(discordRingInterval);
-    discordRingInterval=null;
+  const audio = $('discordRingAudio');
+  if(audio){
+    try{
+      audio.pause();
+      audio.currentTime = 0;
+    }catch(e){}
+  }
+  stopDiscordSynthFallback();
+}
+
+/* РОБОТИЗИРОВАННЫЕ ЗВУКОВЫЕ ЭФФЕКТЫ */
+let robotModInterval = null;
+
+function sndRadioChirp(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const now=a.currentTime;
+    [1300, 1950].forEach((f,i)=>{
+      const o=a.createOscillator(), g=a.createGain();
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(f, now + i*0.06);
+      g.gain.setValueAtTime(0.08, now + i*0.06);
+      g.gain.linearRampToValueAtTime(0.001, now + i*0.06 + 0.05);
+      o.connect(g); g.connect(a.destination);
+      o.start(now + i*0.06); o.stop(now + i*0.06 + 0.05);
+    });
+  }catch(e){}
+}
+
+function sndRadioOff(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(), g=a.createGain();
+    o.type='square';
+    o.frequency.setValueAtTime(320, a.currentTime);
+    o.frequency.linearRampToValueAtTime(140, a.currentTime+0.08);
+    g.gain.setValueAtTime(0.06, a.currentTime);
+    g.gain.linearRampToValueAtTime(0.001, a.currentTime+0.08);
+    o.connect(g); g.connect(a.destination);
+    o.start(); o.stop(a.currentTime+0.08);
+  }catch(e){}
+}
+
+function startRobotModulation(baseFreq){
+  stopRobotModulation();
+  if(!soundEnabled)return;
+  robotModInterval = setInterval(()=>{
+    try{
+      const a=getAudio();if(!a)return;
+      const o=a.createOscillator(), g=a.createGain();
+      o.type = (currentAdminKey==='WebingYT') ? 'sawtooth' : 'triangle';
+      const jitter = (Math.random()-0.5)*15;
+      o.frequency.setValueAtTime(baseFreq + jitter, a.currentTime);
+      g.gain.setValueAtTime(0.022, a.currentTime);
+      g.gain.linearRampToValueAtTime(0.001, a.currentTime+0.12);
+      o.connect(g); g.connect(a.destination);
+      o.start(); o.stop(a.currentTime+0.12);
+    }catch(e){}
+  }, 220);
+}
+
+function stopRobotModulation(){
+  if(robotModInterval){
+    clearInterval(robotModInterval);
+    robotModInterval=null;
   }
 }
 
@@ -791,51 +929,94 @@ setInterval(()=>{
 /* ФЕЙКОВЫЙ ЗВОНОК В DISCORD */
 function triggerDiscordCall(){
   window._discordCalled=true;
-  if($('discordUserName')) $('discordUserName').textContent = '[Гл. Админ] ' + ADMIN_NAME;
+  updateAdminUI();
   if($('discordModal')) $('discordModal').style.display='flex';
   if($('discordStatus')) $('discordStatus').textContent='Входящий голосовой вызов Discord...';
   if($('discordActionBtns')) $('discordActionBtns').style.display='flex';
+  if($('discordNoDeclineHint')) $('discordNoDeclineHint').style.display='block';
   if($('discordSpeechBox')) $('discordSpeechBox').style.display='none';
   if($('discordSkipBtn')) $('discordSkipBtn').style.display='none';
   if($('discordAva')) $('discordAva').classList.remove('speaking');
   startDiscordRingtone();
 }
-function declineDiscordCall(){
-  stopDiscordRingtone();
-  sndBuzzer();
-  if($('discordModal')) $('discordModal').style.display='none';
-  threat(Math.min(100,THREAT+30));
-  ev('📞 <b>СБРОС ЗВОНКА '+ADMIN_NAME+'!</b> Отказ от сотрудничества (+30% к виновности)');
-  toast('❌ Ты сбросил звонок модератора! Добавлено +30% к вине!');
+
+let discordCallTimer=null;
+
+function speakAdminRobot(text){
+  if(!('speechSynthesis' in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='ru-RU';
+    u.pitch=ADMIN.speechPitch;
+    u.rate=ADMIN.speechRate;
+    u.volume=1.0;
+
+    const voices=window.speechSynthesis.getVoices();
+    if(voices&&voices.length){
+      const ruVoices=voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith('ru'));
+      if(ruVoices.length>0){
+        if(currentAdminKey==='WebingYT'){
+          const maleVoice=ruVoices.find(v=>/pavel|dmitry|male|alex/i.test(v.name));
+          u.voice=maleVoice||ruVoices[0];
+        }else{
+          const otherVoice=ruVoices.find(v=>!/pavel|dmitry|male/i.test(v.name))||ruVoices[ruVoices.length-1];
+          u.voice=otherVoice;
+        }
+      }
+    }
+
+    startRobotModulation(ADMIN.robotFreq);
+
+    u.onend=()=>{
+      stopRobotModulation();
+      sndRadioOff();
+    };
+    u.onerror=()=>{
+      stopRobotModulation();
+    };
+
+    window.speechSynthesis.speak(u);
+  }catch(e){
+    console.error('Speech error:',e);
+  }
 }
+
 function acceptDiscordCall(){
   stopDiscordRingtone();
-  sndClick();
+  sndRadioChirp();
   if($('discordActionBtns')) $('discordActionBtns').style.display='none';
-  if($('discordStatus')) $('discordStatus').textContent='Подключено (Голосовой канал #допрос)';
+  if($('discordNoDeclineHint')) $('discordNoDeclineHint').style.display='none';
+  if($('discordStatus')) $('discordStatus').innerHTML='<span style="color:#23a55a">● Подключено</span> (Голосовой канал #допрос)';
   if($('discordAva')) $('discordAva').classList.add('speaking');
   if($('discordSpeechBox')) $('discordSpeechBox').style.display='block';
   if($('discordSkipBtn')) $('discordSkipBtn').style.display='block';
 
-  const phrase='Ну что, '+NICK+', доигрался? С тобой говорит '+ADMIN_NAME+'. Думал мы твой Нурсултан не спалим? Лицо в камеру поверни, кому говорю! Бан по железу уже оформлен!';
-  if($('discordSpeechBox')) $('discordSpeechBox').innerHTML='<b>['+ADMIN_NAME+']:</b> «'+phrase+'»';
+  const phrase=ADMIN.phrase(NICK);
+  if($('discordSpeechBox')) $('discordSpeechBox').innerHTML='<b>['+ADMIN.fullTitle+']:</b> «'+phrase+'»';
 
-  if('speechSynthesis' in window){
-    try{
-      window.speechSynthesis.cancel();
-      const u=new SpeechSynthesisUtterance(phrase);
-      u.lang='ru-RU';
-      u.pitch=0.8;
-      u.rate=0.95;
-      window.speechSynthesis.speak(u);
-    }catch(e){}
+  speakAdminRobot(phrase);
+
+  if(discordCallTimer) clearTimeout(discordCallTimer);
+  discordCallTimer=setTimeout(()=>{
+    finishDiscordCall();
+  },9500);
+}
+
+function finishDiscordCall(){
+  if(discordCallTimer){
+    clearTimeout(discordCallTimer);
+    discordCallTimer=null;
   }
-
-  setTimeout(()=>{
-    if($('discordModal')) $('discordModal').style.display='none';
-    ev('📞 <b>РАЗГОВОР В DISCORD:</b> '+ADMIN_NAME+' зачитал обвинение по софту.');
-    toast(ADMIN_NAME+' отключился: "Жду на трибунале"');
-  },6500);
+  stopDiscordRingtone();
+  stopRobotModulation();
+  if('speechSynthesis' in window){
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+  }
+  if($('discordAva')) $('discordAva').classList.remove('speaking');
+  if($('discordModal')) $('discordModal').style.display='none';
+  ev('📞 <b>РАЗГОВОР В DISCORD:</b> '+ADMIN.fullTitle+' зачитал обвинение по софту.');
+  toast(ADMIN.role+' '+ADMIN.name+' отключился: "Жду на трибунале"');
 }
 
 /* ШАГ 0: ПОВЕСТКА */
@@ -1363,7 +1544,7 @@ function finale(){
     ['♥ Пульс','188 уд/мин','var(--org)']
   ];
   if($('statgrid')) $('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
-  if($('fintext')) $('fintext').innerHTML='Игрок <b>"'+NICK+'"</b> признан злостным читером Minecraft 1.21.11. Зафиксирован полный набор: <b>Nursultan</b>, <b>Vape V4</b>, макросы и подделка пинга. Твоя вебка и голос сохранены в базе сервера. Дело вёл модератор: <b>'+ADMIN_NAME+'</b>.';
+  if($('fintext')) $('fintext').innerHTML='Игрок <b>"'+NICK+'"</b> признан злостным читером Minecraft 1.21.11. Зафиксирован полный набор: <b>Nursultan</b>, <b>Vape V4</b>, макросы и подделка пинга. Твоя вебка и голос сохранены в базе сервера. Дело вёл: <b>'+ADMIN.role+' '+ADMIN.name+'</b>.';
   sndBan();
   toast('⛔ Аккаунт "'+NICK+'" отправлен в перманентный бан');
 }
@@ -1375,7 +1556,7 @@ function sendMomSms(){
   if($('momStatus')) $('momStatus').innerHTML='<span class="o">⏳ Поиск в базах Глаз Бога / СДЭК...</span>';
   setTimeout(()=>{
     sndBuzzer();
-    if($('momStatus')) $('momStatus').innerHTML='<span class="r">✔ SMS ОТПРАВЛЕНА на '+phone+'!</span> Текст: «Здравствуйте. Ваш сын '+NICK+' забанен на сервере за читы Nursultan 1.21.11. Дело вёл '+ADMIN_NAME+'. Видео лица прикреплено».<br><b style="color:var(--grn)">Мама ответила: «Я забираю у него шнур от ПК».</b>';
+    if($('momStatus')) $('momStatus').innerHTML='<span class="r">✔ SMS ОТПРАВЛЕНА на '+phone+'!</span> Текст: «Здравствуйте. Ваш сын '+NICK+' забанен на сервере за читы Nursultan 1.21.11. Дело вёл '+ADMIN.role+' '+ADMIN.name+'. Видео лица прикреплено».<br><b style="color:var(--grn)">Мама ответила: «Я забираю у него шнур от ПК».</b>';
     ev('SMS родителям: <b>уведомление доставлено</b> на '+phone);
   },1800);
 }
@@ -1398,7 +1579,7 @@ function downloadBanCertificate(){
   ctx.fillText('NEXUS ANTICHEAT — ТРИБУНАЛ',50,75);
 
   ctx.fillStyle='#7c86a8';ctx.font='14px monospace';
-  ctx.fillText('ПРОТОКОЛ БЛОКИРОВКИ № '+rnd(10000,99999)+'-CHEAT · МОДЕРАТОР: '+ADMIN_NAME,50,105);
+  ctx.fillText('ПРОТОКОЛ БЛОКИРОВКИ № '+rnd(10000,99999)+'-CHEAT · СОТРУДНИК: '+ADMIN.role+' '+ADMIN.name,50,105);
 
   ctx.strokeStyle='#1e2746';ctx.lineWidth=2;
   ctx.beginPath();ctx.moveTo(50,120);ctx.lineTo(750,120);ctx.stroke();
@@ -1429,7 +1610,7 @@ function downloadBanCertificate(){
   ctx.textAlign='center';
   ctx.fillText('ЗАБАНЕН НАВСЕГДА',0,-10);
   ctx.font='bold 14px monospace';
-  ctx.fillText('МОДЕРАТОР: '+ADMIN_NAME,0,20);
+  ctx.fillText(ADMIN.role+': '+ADMIN.name,0,20);
   ctx.restore();
 
   // Подвал
@@ -1446,7 +1627,7 @@ function downloadBanCertificate(){
 
 /* КОПИРОВАНИЕ И АПЕЛЛЯЦИЯ */
 function copyVerdict(){
-  const t='⛔ NEXUS PROCTOR: Игрок '+NICK+' забанен навсегда на 1.21.11 модератором '+ADMIN_NAME+'. Софт: Nursultan ('+D.nursultan+'%), Vape V4 ('+D.vape+'%), кликер ('+D.cps+'%). Видеокарта: '+hardwareInfo.gpu+'.';
+  const t='⛔ NEXUS PROCTOR: Игрок '+NICK+' забанен навсегда на 1.21.11 сотрудником '+ADMIN.role+' '+ADMIN.name+'. Софт: Nursultan ('+D.nursultan+'%), Vape V4 ('+D.vape+'%), кликер ('+D.cps+'%). Видеокарта: '+hardwareInfo.gpu+'.';
   if(navigator.clipboard&&window.isSecureContext){
     navigator.clipboard.writeText(t).then(()=>{
       sndClick();toast('Приговор скопирован! Можешь плакать в тикет в дискорде 😈');
@@ -1473,8 +1654,8 @@ let ap=0;
 function appeal(){
   ap++;sndBuzzer();
   const m=[
-    'Апелляция отклонена модератором '+ADMIN_NAME+'. Причина: спалился с Nursultan.',
-    'Отклонена. '+ADMIN_NAME+' уже переслал твое видео лица в админ-конфу.',
+    'Апелляция отклонена ('+ADMIN.role+' '+ADMIN.name+'). Причина: спалился с Nursultan.',
+    'Отклонена. '+ADMIN.role+' '+ADMIN.name+' уже переслал твое видео лица в админ-конфу.',
     'Отклонена. Попробуй удалить Vape и играть руками.',
     'Отклонена. Слёзы в тикетах не рассматриваются.',
     'Бан продлен на 9999 лет за настойчивость.'
@@ -1485,12 +1666,10 @@ function appeal(){
 /* СБРОС */
 function resetAll(){
   sndClick();
-  stopDiscordRingtone();
-  if($('discordModal')) $('discordModal').style.display='none';
+  finishDiscordCall();
 
-  ADMIN_NAME = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
-  if($('discordUserName')) $('discordUserName').textContent = '[Гл. Админ] ' + ADMIN_NAME;
-  if($('sessAdmin')) $('sessAdmin').textContent = ADMIN_NAME;
+  currentAdminKey = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
+  updateAdminUI();
 
   NICK='Steve228';THREAT=14;currentStep=0;maxUnlocked=0;
   qi=0;qres.length=0;ap=0;cpsClicks=0;clickTimes=[];cpsDone=false;xrayDone=false;
