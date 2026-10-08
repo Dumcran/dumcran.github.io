@@ -177,6 +177,18 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 /* УВЕДОМЛЕНИЕ РОДИТЕЛЯМ */
 .mom-card{background:#060810;border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0;text-align:left}
 .mom-card h4{font-size:12px;color:var(--org);letter-spacing:1px;margin-bottom:8px}
+
+/* LIVE ЧАТ */
+#liveChat{height:160px;overflow-y:auto;font-family:monospace;font-size:11px;background:#04060c;border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px}
+#liveChat::-webkit-scrollbar{width:4px}
+#liveChat::-webkit-scrollbar-thumb{background:#1e2746;border-radius:2px}
+
+/* AIM ARENA */
+.aim-target{position:absolute;top:50px;left:50px;width:52px;height:52px;background:rgba(239,68,68,0.3);border:2px solid var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;user-select:none;box-shadow:0 0 16px rgba(239,68,68,0.7);pointer-events:none}
+
+/* ANYDESK MODAL */
+.ad-header{background:#e11d48;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:12px;font-weight:bold}
+.ad-cursor{position:absolute;top:50px;left:50px;pointer-events:none;transition:top 0.4s ease, left 0.4s ease;z-index:10;display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -207,6 +219,55 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
   </div>
 </div>
 
+<!-- FAKE ANYDESK MODAL -->
+<div class="d-overlay" id="anydeskModal" style="display:none;z-index:115">
+  <div style="background:#1f1f1f;border:2px solid #ef4444;border-radius:12px;width:560px;max-width:95vw;box-shadow:0 16px 50px rgba(0,0,0,0.9);overflow:hidden;position:relative">
+    <div class="ad-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span>🔴 AnyDesk v8.2</span>
+        <span>| Сессия #941-205-118</span>
+        <span style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px" id="anydeskAdminTag">[Гл. Админ] WebingYT</span>
+      </div>
+      <div style="font-size:11px;background:#000;padding:2px 8px;border-radius:4px">УДАЛЕННОЕ УПРАВЛЕНИЕ АКТИВНО</div>
+    </div>
+    <div style="padding:14px;background:#2b2b2b">
+      <div style="background:#fff;border-radius:6px;border:1px solid #777;box-shadow:0 4px 12px rgba(0,0,0,0.5);overflow:hidden">
+        <div style="background:#e6e6e6;padding:4px 10px;font-size:11px;color:#333;font-family:sans-serif;display:flex;justify-content:space-between;border-bottom:1px solid #ccc">
+          <span>Безымянный — Блокнот (Администратор)</span>
+          <span>✕</span>
+        </div>
+        <div id="anydeskNotepad" style="background:#ffffff;color:#000000;font-family:Consolas,monospace;font-size:13px;padding:12px;min-height:140px;white-space:pre-wrap;line-height:1.5"></div>
+      </div>
+    </div>
+    <div id="anydeskCursor" class="ad-cursor">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 2L20 10L12 12L10 20L4 2Z" fill="#ef4444" stroke="#ffffff" stroke-width="2"/></svg>
+      <span style="background:#ef4444;color:#fff;font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;font-family:sans-serif">Admin</span>
+    </div>
+    <div style="padding:10px 14px;background:#181818;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:#888">Админ лично печатает в блокноте вашего ПК...</div>
+      <button class="panic-btn" style="border-color:var(--red);color:var(--red)" onclick="closeAnydesk()">🏳️ Понял, признаю вину...</button>
+    </div>
+  </div>
+</div>
+
+<!-- BRIBE MODAL (ВЗЯТКА 300 РУБЛЕЙ) -->
+<div class="d-overlay" id="bribeModal" style="display:none;z-index:125">
+  <div class="d-box" style="width:380px;text-align:left">
+    <div style="font-size:16px;font-weight:900;color:var(--org);margin-bottom:8px">💸 ВЗЯТКА СОТРУДНИКУ АНТИЧИТА</div>
+    <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Официальный разбан и удаление протокола нарушителя <b id="bribeNick">Steve228</b> из базы Nexus.</div>
+    <div style="font-size:11px;color:var(--txt);margin-bottom:6px">Выберите способ перевода:</div>
+    <select id="bribeMethod" style="width:100%;background:#1e1f22;border:1px solid #3f4147;color:#fff;padding:8px;border-radius:6px;margin-bottom:10px">
+      <option>💳 СБП (по номеру телефона админа)</option>
+      <option>🟡 Тинькофф / Сбер (перевод на карту)</option>
+      <option>💎 Донат 64 стаками тотемов на сервере</option>
+      <option>🪙 Криптовалюта USDT (TRC-20)</option>
+    </select>
+    <div style="font-size:14px;font-weight:bold;color:var(--grn);margin-bottom:12px">Сумма взятки: 300 ₽</div>
+    <button style="background:linear-gradient(90deg,#059669,#10b981)" onclick="payBribe()">💸 ОПЛАТИТЬ И ПОЛУЧИТЬ РАЗБАН</button>
+    <button class="ghost" style="margin-top:6px" onclick="$('bribeModal').style.display='none'">✕ Отмена</button>
+  </div>
+</div>
+
 <header>
 <div class="logo">⚠️</div>
 <div>
@@ -215,7 +276,7 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 </div>
 <div class="hbadge bad"><span class="hdot"></span>СТАТУС: <b>ВЫЗВАН НА ПРОВЕРКУ</b></div>
 <div class="hbadge warn">⏳ ДО АВТОБАНА: <b id="banTimer">04:59</b></div>
-<div class="hbadge" id="tabBadge">👀 УХОД С ВКЛАДКИ: <b id="tabCount">0</b></div>
+<div class="hbadge" id="srvBadge">🌐 СЕРВЕР: <b id="srvName">ReallyWorld</b></div>
 <div class="hbadge" id="sndbtn" style="cursor:pointer" onclick="toggleSound()">🔊 звук: <b id="sndtxt">ВКЛ</b></div>
 <button class="panic-btn" onclick="surrender()">🏳️ ЯВКА С ПОВИННОЙ</button>
 </header>
@@ -234,7 +295,7 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div class="step locked" id="st4"><b>04 · X-Ray</b>поиск руд</div>
 <div class="step locked" id="st5"><b>05 · Полиграф</b>3 вопроса</div>
 <div class="step locked" id="st6"><b>06 · Обыск</b>%appdata% и хотбар</div>
-<div class="step locked" id="st7"><b>07 · Процессы</b>дамп памяти</div>
+<div class="step locked" id="st7"><b>07 · Экран</b>демонстрация и дамп</div>
 <div class="step locked" id="st8"><b>08 · Трибунал</b>приговор и бланк</div>
 </div>
 
@@ -244,11 +305,14 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div class="card">
 <h3><i>👤</i>Карточка нарушителя</h3>
 <div style="display:flex;gap:12px;align-items:center">
-<div class="avatar" id="ava">❓</div>
+<div class="avatar" id="ava" style="overflow:hidden;padding:0;position:relative">
+  <img id="skinImg" src="https://minotar.net/bust/Steve/100.png" style="width:100%;height:100%;object-fit:cover;image-rendering:pixelated" alt="Skin" onerror="this.src='https://minotar.net/bust/Steve/100.png'">
+</div>
 <div><div class="pname" id="pname">???</div><div style="font-size:11px;color:var(--dim)" id="puuid">uuid: —</div></div>
 </div>
 <div style="margin-top:8px">
 <div class="prow"><span>IP-адрес</span><b id="pip">—.—.—.—</b></div>
+<div class="prow"><span>Сервер</span><b id="pserver" style="color:var(--cyan)">ReallyWorld</b></div>
 <div class="prow"><span>Клиент</span><b>Fabric 1.21.11 (Подозрительный)</b></div>
 <div class="prow"><span>Подозрение на софт</span><b id="psoft" style="color:var(--red)">Nursultan / Meteor</b></div>
 <div class="prow"><span>Потливость рук</span><b id="psweat">—</b></div>
@@ -301,8 +365,6 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 </div>
 <input id="nick" placeholder="Введи свой никнейм из Minecraft..." maxlength="16" autofocus>
 <button onclick="goNick()" id="nickbtn">⚠️ ПОДТВЕРДИТЬ ЛИЧНОСТЬ И НАЧАТЬ ПРОВЕРКУ</button>
-<!-- УБЕГАЮЩАЯ КНОПКА -->
-<button id="runawayBtn" class="ghost" style="margin-top:8px;border-color:var(--grn);color:var(--grn)" onmouseover="dodgeButton(this)">🕊️ Я НЕВИНОВЕН (ОТМЕНИТЬ ПРОВЕРКУ)</button>
 <div class="hex" style="margin-top:14px">сессионный хэш: <b>0xDEAD_BEEF_CHEAT</b> · целевой клиент: <b>1.21.11</b> · ложные срабатывания: <b>0.00%</b></div>
 </div>
 
@@ -339,9 +401,9 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div id="voiceNextBox"></div>
 </div>
 
-<!-- ШАГ 3: CPS КЛИКЕР-ТЕСТ -->
+<!-- ШАГ 3: CPS КЛИКЕР-ТЕСТ + AIM ТРЕНЕР -->
 <div class="screen" id="s3">
-<div class="big"><b>03 · CPS ТЕСТ НА АВТОКЛИКЕР.</b> Защита подозревает макросы мышки или <b class="r">Vape V4 Autoclicker</b>.<br>Кликни ровно 10 раз по мишени так быстро, как можешь в PvP. Система замерит тайминги между кликами.</div>
+<div class="big"><b>03.1 · CPS ТЕСТ НА АВТОКЛИКЕР.</b> Защита подозревает макросы мышки или <b class="r">Vape V4 Autoclicker</b>.<br>Кликни ровно 10 раз по мишени так быстро, как можешь в PvP. Система замерит тайминги между кликами.</div>
 <div class="cps-area" id="cpsArea" onclick="cpsClick()">
   <div class="cps-target" id="cpsCount">0 / 10</div>
   <div class="cps-sub" id="cpsHint">КЛИКАЙ СЮДА ИЗО ВСЕХ СИЛ!</div>
@@ -351,6 +413,19 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
   </div>
 </div>
 <div class="big" style="text-align:center" id="cpsRes">читерские макросы имеют идеальный делей (50ms). не спались.</div>
+
+<!-- AIM ТРЕНЕР -->
+<div id="aimTrainerBox" style="display:none;margin-top:14px;background:#05070e;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center">
+  <div class="big"><b>03.2 · ПРОВЕРКА НА SILENT-AIM И TRIGGERBOT.</b><br>Попади по бешеной модельке 3 раза. Промах = SilentAim. Попадание = TriggerBot.</div>
+  <div id="aimArena" style="position:relative;height:150px;background:#03050a;border:1px dashed var(--line);border-radius:8px;overflow:hidden;margin:10px 0;cursor:crosshair" onpointerdown="onArenaPointerDown(event)">
+    <div id="aimTarget" class="aim-target">
+      <span style="font-size:24px">🎯</span>
+    </div>
+  </div>
+  <div style="font-size:12px;font-family:monospace;color:var(--dim)">ПОПАДАНИЙ: <b id="aimScore" class="c">0 / 3</b> · РЕАКЦИЯ: <b id="aimReaction" class="o">— ms</b></div>
+  <div id="aimRes" style="font-size:12px;margin-top:6px;color:var(--dim)">цель мечется по арене! нажми точно по хитбоксу!</div>
+</div>
+
 <div id="cpsNextBox"></div>
 </div>
 
@@ -371,20 +446,66 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div id="lieNextBox"></div>
 </div>
 
-<!-- ШАГ 6: ШМОН -->
+<!-- ШАГ 6: ШМОН + ДАМП ИСТОРИИ БРАУЗЕРА -->
 <div class="screen" id="s6">
 <div class="big"><b>06 · ОБЫСК ИНВЕНТАРЯ И КЭША .MINECRAFT.</b> Мы просканировали твой хотбар и файлы.<br>Найди и кликни по предмету, который ты считаешь «чистым». Любой клик фиксирует улику.</div>
 <div class="inv" id="inv"></div>
 <div class="big" style="text-align:center;margin-top:10px" id="invRes">сканируем слоты...</div>
+
+<!-- ДАМП ИСТОРИИ ПОИСКА -->
+<div id="searchHistoryBox" style="margin-top:14px;background:#05070e;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:left">
+  <div style="font-size:11px;color:var(--cyan);font-weight:900;letter-spacing:1px;margin-bottom:8px">🌐 ДАМП КЭША БРАУЗЕРОВ (ИСТОРИЯ ПОИСКА ЗА 24 ЧАСА):</div>
+  <div style="font-family:monospace;font-size:11px;line-height:1.8;color:var(--dim)">
+    <div><span style="color:#ef4444">18:42</span> · <b>Яндекс:</b> скачать нурсултан фри без ратника 1.21.11</div>
+    <div><span style="color:#ef4444">18:47</span> · <b>Google:</b> как скрыть читы на проверке от админа</div>
+    <div><span style="color:#fb923c">19:03</span> · <b>YouTube:</b> гайд настройка киллауры чтобы не кикал GrimAC</div>
+    <div><span style="color:#34d399">19:22</span> · <b>Google:</b> гдз 7 класс геометрия мерзляк номер 234</div>
+    <div><span style="color:#fb923c">19:40</span> · <b>FunPay:</b> купить 64 стака тотемов бессмертия дешево</div>
+    <div><span style="color:#ef4444">20:01</span> · <b>Яндекс:</b> почему трясутся руки на дуэли с булавой</div>
+    <div><span style="color:#22d3ee">20:15</span> · <b>Google:</b> как доказать маме что я не читер</div>
+  </div>
+</div>
+
 <div id="invNextBox"></div>
 </div>
 
-<!-- ШАГ 7: ПРОЦЕССЫ -->
+<!-- ШАГ 7: ЭКРАН И ДАМП ПРОЦЕССОВ -->
 <div class="screen" id="s7">
-<div class="big"><b>07 · ДАМП ПАМЯТИ И USN-ЖУРНАЛА.</b> Читаем запущенные процессы и удаленные файлы за последние 2 часа.<br>Ищем следы <b>Nursultan</b>, <b>Expensive 3.1</b>, <b>Meteor</b>, <b>Vape V4</b>, <b>Drip Lite</b> и <b>Celestial</b>.</div>
-<button onclick="procScan()" id="procbtn">🖥️ ЗАПУСТИТЬ СКАНИРОВАНИЕ ПРОЦЕССОВ</button>
-<div id="term" style="margin-top:12px"></div>
-<div style="text-align:center" id="procnext"></div>
+<div class="big"><b>07 · ОБЯЗАТЕЛЬНАЯ ДЕМОНСТРАЦИЯ ЭКРАНА И ДАМП ПАМЯТИ.</b><br>
+Для сверки клиента 1.21.11, проверки папки <code>.minecraft/mods</code> и кэша Telegram требуется принудительный показ рабочего стола. Отказ = моментальный бан.
+</div>
+
+<!-- ЭТАП 7.1: ПРОВЕРКА ЭКРАНА -->
+<div id="screenSharePhase" style="background:#05070e;border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center">
+  <div style="font-size:13px;font-weight:bold;color:var(--cyan);margin-bottom:6px">📹 ЭТАП 07.1 · ОБЯЗАТЕЛЬНЫЙ ЗАХВАТ И АНАЛИЗ ЭКРАНА</div>
+  <div style="font-size:12px;color:var(--dim);margin-bottom:12px">Включи демонстрацию экрана. Нейросеть античита просканирует открытые окна на инжекторы софта.</div>
+
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button style="background:linear-gradient(90deg,#0284c7,#22d3ee);color:#04060c;font-weight:900;padding:12px 22px;width:auto" id="screenShareBtn" onclick="startScreenShareTest()">📹 ВКЛЮЧИТЬ ДЕМОНСТРАЦИЮ ЭКРАНА</button>
+    <button class="ghost" style="border-color:var(--red);color:var(--red);width:auto;padding:12px 18px" id="screenRefuseBtn" onclick="refuseScreenShare()">❌ Я БОЮСЬ ПОКАЗАТЬ ЭКРАН (ОТКАЗ = БАН)</button>
+  </div>
+
+  <div id="screenShareBox" style="position:relative;margin-top:14px;display:none;border-radius:8px;overflow:hidden;border:2px solid var(--red);max-height:280px">
+    <video id="screenShareVideo" autoplay playsinline muted style="width:100%;max-height:280px;object-fit:contain;background:#000"></video>
+    <div id="screenHud" style="position:absolute;inset:0;pointer-events:none">
+      <div style="position:absolute;top:10px;left:10px;border:2px solid var(--red);background:rgba(239,68,68,0.35);color:#fff;font-family:monospace;font-size:10px;padding:3px 6px;border-radius:4px">
+        ⚠️ DETECTED: Telegram "Nursultan Free CFG"
+      </div>
+      <div style="position:absolute;bottom:14px;right:14px;border:2px solid var(--org);background:rgba(251,146,60,0.35);color:#fff;font-family:monospace;font-size:10px;padding:3px 6px;border-radius:4px">
+        ⚠️ DETECTED: Process Hacker 2.exe / USN Cleaner
+      </div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90px;height:90px;border:1px dashed var(--cyan);border-radius:50%;animation:rot 3s linear infinite"></div>
+    </div>
+  </div>
+  <div id="screenShareRes" style="font-size:12px;color:var(--dim);margin-top:10px"></div>
+</div>
+
+<!-- ЭТАП 7.2: ДАМП ПРОЦЕССОВ (РАСКРЫВАЕТСЯ ПОСЛЕ ЭКРАНА) -->
+<div id="procPhase" style="display:none;margin-top:14px;background:#05070e;border:1px solid var(--line);border-radius:10px;padding:14px">
+  <div style="font-size:13px;font-weight:bold;color:var(--mag);margin-bottom:6px">🖥️ ЭТАП 07.2 · ДАМП ПАМЯТИ И СПИСКА ПРОЦЕССОВ JAVAW.EXE</div>
+  <div id="term" style="margin-top:8px"></div>
+  <div style="text-align:center;margin-top:12px" id="procnext"></div>
+</div>
 </div>
 
 <!-- ШАГ 8: ТРИБУНАЛ И СПРАВКА -->
@@ -394,20 +515,22 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div class="statgrid" id="statgrid"></div>
 <div class="big" id="fintext" style="margin-top:12px"></div>
 
-<!-- ЗВОНОК МАМКЕ -->
+<!-- ЗВОНОК И SMS МАМКЕ -->
 <div class="mom-card">
-  <h4>📱 УВЕДОМЛЕНИЕ РОДИТЕЛЕЙ (SMS О БАНЕ ЗА ЧИТЫ):</h4>
-  <div style="display:flex;gap:8px">
-    <input id="momPhone" placeholder="+7 (999) 000-00-00" style="margin-top:0">
-    <button style="width:auto;white-space:nowrap;margin-top:0;padding:0 16px" onclick="sendMomSms()">📲 ОТПРАВИТЬ SMS</button>
+  <h4>📱 УВЕДОМЛЕНИЕ РОДИТЕЛЕЙ (SMS И ГОЛОСОВОЙ ЗВОНОК О БАНЕ):</h4>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <input id="momPhone" placeholder="+7 (999) 000-00-00" style="margin-top:0;flex:1;min-width:180px">
+    <button style="width:auto;white-space:nowrap;margin-top:0;padding:0 14px" onclick="sendMomSms()">📲 ОТПРАВИТЬ SMS</button>
+    <button style="width:auto;white-space:nowrap;margin-top:0;padding:0 14px;background:linear-gradient(90deg,#0284c7,#22d3ee);color:#04060c;font-weight:bold" onclick="callMomVoice()">📞 ПОЗВОНИТЬ РОДИТЕЛЯМ</button>
   </div>
   <div id="momStatus" style="font-size:11px;margin-top:6px;color:var(--dim)">номер будет проверен по базам утечек СДЭК / Глаз Бога</div>
 </div>
 
+<!-- КНОПКА ВЗЯТКИ -->
+<button style="background:linear-gradient(90deg,#f59e0b,#eab308);color:#000;font-weight:900" onclick="openBribeModal()">💸 ДАТЬ ВЗЯТКУ АДМИНИСТРАТОРУ (РАЗБАН ЗА 300 РУБЛЕЙ)</button>
 <button class="next-btn" onclick="downloadBanCertificate()">📥 СКАЧАТЬ ОФИЦИАЛЬНУЮ СПРАВКУ О БАНЕ (PNG)</button>
 <button onclick="copyVerdict()">📋 СКОПИРОВАТЬ ПРИГОВОР (для тикета в Discord)</button>
 <button class="ghost" onclick="appeal()">📝 ПОДАТЬ ЭКСТРЕННУЮ АПЕЛЛЯЦИЮ</button>
-<button class="ghost" style="margin-top:8px;border-color:var(--org);color:var(--org)" onclick="resetAll()">🔄 СБРОС (ПРОВЕРИТЬ СЛЕДУЮЩЕГО ПОДОЗРЕВАЕМОГО)</button>
 <div style="text-align:center" id="appealres"></div>
 </div>
 
@@ -422,6 +545,11 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 <div class="card">
 <h3><i>🧾</i>Журнал доказательств</h3>
 <div id="evi"><div class="ev">протокол открыт. сбор улик...</div></div>
+</div>
+<!-- ЧАТ ИГРОКОВ В РЕАЛЬНОМ ВРЕМЕНИ -->
+<div class="card">
+<h3><i>💬</i>Чат сервера (LIVE)</h3>
+<div id="liveChat"></div>
 </div>
 <div class="card">
 <h3><i>💻</i>Системная сессия</h3>
@@ -495,31 +623,31 @@ function updateAdminUI(){
 }
 updateAdminUI();
 
-let NICK='Steve228', THREAT=14;
+let NICK='Steve228', SERVER_NAME='ReallyWorld', THREAT=14;
 let currentStep=0, maxUnlocked=0;
 let soundEnabled=true, audioCtx=null;
-let tabSwitchCount=0;
 
 let faceMediaStream=null, faceVideoBlobUrl=null;
 let voiceMediaStream=null, voiceAudioBlobUrl=null;
 let hardwareInfo={gpu:'NVIDIA GeForce RTX 3060',cores:'8',ram:'16 ГБ',screen:'1920x1080',tz:'Europe/Moscow'};
 
-/* ОФИЦИАЛЬНЫЕ ПРЯМЫЕ ТЕКСТУРЫ ПРЕДМЕТОВ MINECRAFT FANDOM */
+/* ОФИЦИАЛЬНЫЕ ПРЯМЫЕ ТЕКСТУРЫ ПРЕДМЕТОВ MINECRAFT 1.21 */
 const MC_ICONS = {
-  mace: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/63/Mace.png/revision/latest',
-  sword: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/9/94/%D0%9D%D0%B5%D0%B7%D0%B5%D1%80%D0%B8%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D0%BC%D0%B5%D1%87.png/revision/latest?cb=20200207141712',
-  steak: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/c/ca/%D0%96%D0%B0%D1%80%D0%B5%D0%BD%D0%B0%D1%8F_%D0%B3%D0%BE%D0%B2%D1%8F%D0%B4%D0%B8%D0%BD%D0%B0.png/revision/latest?cb=20190424164136',
-  totem: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/6/6c/%D0%A2%D0%BE%D1%82%D0%B5%D0%BC_%D0%B1%D0%B5%D1%81%D1%81%D0%BC%D0%B5%D1%80%D1%82%D0%B8%D1%8F.png/revision/latest?cb=20190424171548',
-  pickaxe: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/6/6c/%D0%9D%D0%B5%D0%B7%D0%B5%D1%80%D0%B8%D1%82%D0%BE%D0%B2%D0%B0%D1%8F_%D0%BA%D0%B8%D1%80%D0%BA%D0%B0.png/revision/latest?cb=20200207143740',
-  axe: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/0/07/%D0%9D%D0%B5%D0%B7%D0%B5%D1%80%D0%B8%D1%82%D0%BE%D0%B2%D1%8B%D0%B9_%D1%82%D0%BE%D0%BF%D0%BE%D1%80.png/revision/latest?cb=20200210171759',
-  potion: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/3/38/%D0%92%D0%B7%D1%80%D1%8B%D0%B2%D0%BD%D0%BE%D0%B5_%D0%B7%D0%B5%D0%BB%D1%8C%D0%B5.png/revision/latest?cb=20190424180331',
-  diamond: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/e/e9/%D0%90%D0%BB%D0%BC%D0%B0%D0%B7_JE3_BE3.png/revision/latest?cb=20190424162100',
-  pearl: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/0/0f/%D0%96%D0%B5%D0%BC%D1%87%D1%83%D0%B3_%D0%9A%D1%80%D0%B0%D1%8F.png/revision/latest?cb=20190424163228',
-  elytra: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/b/b1/%D0%AD%D0%BB%D0%B8%D1%82%D1%80%D1%8B.png/revision/latest?cb=20191117085652',
-  obsidian: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/1/18/%D0%9E%D0%B1%D1%81%D0%B8%D0%B4%D0%B8%D0%B0%D0%BD_JE3_BE2.png/revision/latest?cb=20200528052725',
-  gapple: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/8/8f/%D0%97%D0%BE%D0%BB%D0%BE%D1%82%D0%BE%D0%B5_%D1%8F%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE_JE2_BE2.png/revision/latest?cb=20190424163743',
-  stone: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/b/b2/%D0%9A%D0%B0%D0%BC%D0%B5%D0%BD%D1%8C_JE5_BE3.png/revision/latest?cb=20200519051846',
-  diamond_ore: 'https://static.wikia.nocookie.net/minecraft_ru_gamepedia/images/e/e9/%D0%90%D0%BB%D0%BC%D0%B0%D0%B7_JE3_BE3.png/revision/latest?cb=20190424162100'
+  mace: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/mace.png',
+  sword: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_sword.png',
+  steak: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/cooked_beef.png',
+  totem: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/totem_of_undying.png',
+  pickaxe: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_pickaxe.png',
+  axe: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/netherite_axe.png',
+  potion: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/splash_potion.png',
+  diamond: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/diamond.png',
+  pearl: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/ender_pearl.png',
+  elytra: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/elytra.png',
+  obsidian: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/obsidian.png',
+  gapple: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/golden_apple.png',
+  deepslate: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/deepslate.png',
+  stone: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/deepslate.png',
+  diamond_ore: 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/deepslate_diamond_ore.png'
 };
 
 const D={nursultan:0, vape:0, meteor:0, expensive:0, cps:0, xray:0};
@@ -586,6 +714,17 @@ function sndClick(){
     o.frequency.exponentialRampToValueAtTime(350,a.currentTime+.04);
     g.gain.setValueAtTime(.08,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.04);
     o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.04);
+  }catch(e){}
+}
+function sndKeyboardClick(){
+  if(!soundEnabled)return;
+  try{
+    const a=getAudio();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type='triangle';o.frequency.setValueAtTime(rnd(700,1400),a.currentTime);
+    g.gain.setValueAtTime(0.04,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.03);
+    o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+0.03);
   }catch(e){}
 }
 function sndBuzzer(){
@@ -760,27 +899,314 @@ function stopRobotModulation(){
   }
 }
 
-/* УБЕГАЮЩАЯ КНОПКА "Я НЕВИНОВЕН" */
-function dodgeButton(btn){
-  sndClick();
-  const maxX=240, maxY=140;
-  const rx=(Math.random()-0.5)*maxX;
-  const ry=(Math.random()-0.5)*maxY;
-  btn.style.transform=`translate(${rx}px, ${ry}px)`;
-  btn.textContent=pick(['Ага, щас! 😂','Не поймаешь! 🏃','В бан! ⛔','Слишком медленный! 🐌','Куда жмёшь?! 😈']);
+/* ПОДГРУЗКА РЕАЛЬНОГО СКИНА MINECRAFT ПО НИКУ */
+function loadPlayerSkin(nick){
+  const cleanNick=(nick||'Steve228').trim();
+  const bustUrl='https://minotar.net/bust/'+encodeURIComponent(cleanNick)+'/100.png';
+  const img=$('skinImg');
+  if(img){
+    img.src=bustUrl;
+    img.onerror=()=>{ img.src='https://minotar.net/bust/Steve/100.png'; };
+  }
 }
 
-/* ДЕТЕКТ СВОРАЧИВАНИЯ ВКЛАДКИ */
-document.addEventListener('visibilitychange',()=>{
-  if(document.hidden){
-    tabSwitchCount++;
-    if($('tabCount')) $('tabCount').textContent=tabSwitchCount;
-    threat(Math.min(100,THREAT+15));
-    ev('🚨 <b>СВОРАЧИВАНИЕ ВКЛАДКИ #'+tabSwitchCount+'!</b> Попытка зачистить %appdata% или закрыть чит!');
-    sndBuzzer();
-    toast('🚨 ТЫ СВЕРНУЛ ВКЛАДКУ! Попытка экстренно удалить софт зафиксирована (+15% к вине)');
+/* AIM & TRIGGERBOT ТРЕНЕР (ШАГ 3.2) */
+let aimHits=0, aimTargetInterval=null, aimLastSpawn=0;
+function startAimTrainer(){
+  aimHits=0;
+  if($('aimScore')) $('aimScore').textContent='0 / 3';
+  if($('aimReaction')) $('aimReaction').textContent='— ms';
+  if($('aimRes')) $('aimRes').innerHTML='<span class="o">Цель мечется по арене! Поймай хитбокс 3 раза!</span>';
+  if($('aimTrainerBox')) $('aimTrainerBox').style.display='block';
+  moveAimTarget();
+  if(aimTargetInterval) clearInterval(aimTargetInterval);
+  aimTargetInterval=setInterval(moveAimTarget,650);
+}
+function moveAimTarget(){
+  const arena=$('aimArena'), target=$('aimTarget');
+  if(!arena||!target)return;
+  const maxW=Math.max(40,arena.clientWidth-60);
+  const maxH=Math.max(40,arena.clientHeight-60);
+  target.style.left=rnd(6,maxW)+'px';
+  target.style.top=rnd(6,maxH)+'px';
+  target.style.borderColor='var(--red)';
+  target.style.boxShadow='0 0 16px rgba(239,68,68,0.7)';
+  aimLastSpawn=performance.now();
+}
+function onArenaPointerDown(e){
+  if(aimHits>=3)return;
+  const target=$('aimTarget');
+  if(!target)return;
+  const rect=target.getBoundingClientRect();
+  // Щедрый хитбокс с запасом +16px и мгновенная регистрация по первому касанию
+  const pad=16;
+  const isHit=(
+    e.clientX>=rect.left-pad &&
+    e.clientX<=rect.right+pad &&
+    e.clientY>=rect.top-pad &&
+    e.clientY<=rect.bottom+pad
+  );
+  if(isHit){
+    hitAimTarget();
+  }else{
+    missAimArena();
   }
-});
+}
+function hitAimTarget(){
+  sndClick();
+  aimHits++;
+  const react=Math.round(performance.now()-aimLastSpawn);
+  const target=$('aimTarget');
+  if(target){
+    target.style.borderColor='var(--grn)';
+    target.style.boxShadow='0 0 24px var(--grn)';
+  }
+  if($('aimReaction')) $('aimReaction').textContent=react+' ms';
+  if($('aimScore')) $('aimScore').textContent=aimHits+' / 3';
+  if(aimHits>=3){
+    if(aimTargetInterval) clearInterval(aimTargetInterval);
+    sndBuzzer();
+    D.cps=Math.max(D.cps,rnd(95,100));
+    renderDetects();
+    threat(62);
+    if($('aimRes')) $('aimRes').innerHTML='⚡ РЕАКЦИЯ <b class="r">'+react+' ms</b>: Нечеловеческая наводка! Обнаружен <b class="r">TriggerBot / AimAssist</b> (+20% к вине)!';
+    ev('Aim-Тест: <b>Реакция '+react+'ms</b>, фиксация прицела за 1 тик, 100% софт');
+    if($('cpsNextBox')) $('cpsNextBox').innerHTML='<button class="next-btn" onclick="nextStep(4)">▶ ПЕРЕЙТИ К X-RAY ТЕСТУ (ШАГ 04)</button>';
+  }else{
+    setTimeout(moveAimTarget,100);
+  }
+}
+function missAimArena(){
+  sndBuzzer();
+  threat(Math.min(100,THREAT+5));
+  if($('aimRes')) $('aimRes').innerHTML='❌ <b class="r">ПРОМАХ!</b> Руки дрожат, аим косой. На сервере 100% включал SilentAim (+5% к вине)!';
+  ev('Aim-Тест: <b>Промах по хитбоксу</b>, подозрение на SilentAim (+5% к вине)');
+}
+
+/* ДЕМОНСТРАЦИЯ ЭКРАНА (ШАГ 7) */
+let screenMediaStream=null;
+function stopScreenShare(){
+  if(screenMediaStream){
+    try{screenMediaStream.getTracks().forEach(t=>t.stop());}catch(e){}
+    screenMediaStream=null;
+  }
+  const v=$('screenShareVideo');
+  if(v) v.srcObject=null;
+  if($('screenShareBox')) $('screenShareBox').style.display='none';
+}
+
+async function startScreenShareTest(){
+  sndClick();
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){
+    refuseScreenShare('Браузер не поддерживает захват экрана');
+    return;
+  }
+  try{
+    screenMediaStream=await navigator.mediaDevices.getDisplayMedia({video:true});
+    screenMediaStream.getTracks().forEach(track=>{
+      track.onended=()=>stopScreenShare();
+    });
+    const v=$('screenShareVideo');
+    if(v){
+      v.srcObject=screenMediaStream;
+      if($('screenShareBox')) $('screenShareBox').style.display='block';
+    }
+    sndBuzzer();
+    threat(95);
+    ev('🖥️ <b>ЭКРАН ЗАХВАЧЕН:</b> Обнаружен скрытый Telegram-чат "Nursultan Free CFG" и USN Cleaner!');
+    if($('screenShareRes')) $('screenShareRes').innerHTML='<span class="r">⚠️ В ПОТОКЕ ОБНАРУЖЕНЫ ЧИТ-ПРОЦЕССЫ!</span> Начинаем глубокий дамп памяти...';
+    toast('🚨 В ДЕМОНСТРАЦИИ ЭКРАНА НАЙДЕНЫ ЧИТЫ!');
+    if($('screenShareBtn')) $('screenShareBtn').disabled=true;
+    if($('screenRefuseBtn')) $('screenRefuseBtn').disabled=true;
+    setTimeout(launchProcDumpPhase, 2400);
+  }catch(e){
+    refuseScreenShare();
+  }
+}
+
+function refuseScreenShare(reason){
+  sndBuzzer();
+  threat(Math.min(100,THREAT+25));
+  ev('🚨 <b>ОТКАЗ ОТ ПОКАЗА ЭКРАНА:</b> Подозреваемый испугался показать рабочий стол (+25% к вине)!');
+  if($('screenShareRes')) $('screenShareRes').innerHTML='<span class="r">❌ '+(reason||'ОТКАЗ ОТ ДЕМОНСТРАЦИИ ЗАФИКСИРОВАН')+' (+25% к вине). Инициируем принудительный дамп памяти...</span>';
+  toast('ОТКАЗ ОТ ПОКАЗА ЭКРАНА = ПРИЗНАНИЕ ВИНЫ!');
+  if($('screenShareBtn')) $('screenShareBtn').disabled=true;
+  if($('screenRefuseBtn')) $('screenRefuseBtn').disabled=true;
+  setTimeout(launchProcDumpPhase, 2000);
+}
+
+function launchProcDumpPhase(){
+  if($('procPhase')) $('procPhase').style.display='block';
+  procScan();
+}
+
+/* ФЕЙКОВЫЙ ANYDESK */
+let anydeskTyping=false;
+function startAnydeskSession(){
+  sndRadioChirp();
+  if($('anydeskModal')) $('anydeskModal').style.display='flex';
+  if($('anydeskAdminTag')) $('anydeskAdminTag').textContent=ADMIN.fullTitle;
+  const notepad=$('anydeskNotepad');
+  const cursor=$('anydeskCursor');
+  if(notepad) notepad.textContent='';
+  if(cursor){
+    cursor.style.top='30px';
+    cursor.style.left='30px';
+    setTimeout(()=>{
+      cursor.style.top='120px';
+      cursor.style.left='220px';
+    },300);
+  }
+  const text=`Так-так-так... Игрок "${NICK}".
+Куда ты спрятал Nursultan.jar? Думал, переименуешь в OptiFine.jar и мы не найдем?
+Мы только что проверили корзину твоего ПК через USN-журнал.
+Удален файл "nursultan_free_cracked.exe" ровно 18 минут назад!
+HWID заблокирован. Бан 30 дней без права разбана!
+Сотрудник: ${ADMIN.fullTitle}.`;
+  let idx=0;
+  anydeskTyping=true;
+  setTimeout(function typeChar(){
+    if(!anydeskTyping)return;
+    if(idx<text.length){
+      if(notepad) notepad.textContent+=text[idx];
+      sndKeyboardClick();
+      idx++;
+      setTimeout(typeChar, rnd(25,50));
+    }else{
+      sndBuzzer();
+      threat(100);
+      ev('🖥️ <b>ANYDESK СЕССИЯ:</b> '+ADMIN.fullTitle+' лично зафиксировал остатки чита в корзине.');
+    }
+  },800);
+}
+function closeAnydesk(){
+  anydeskTyping=false;
+  sndClick();
+  if($('anydeskModal')) $('anydeskModal').style.display='none';
+  toast('Сессия AnyDesk завершена. Все улики занесены в дело.');
+}
+
+/* ВЗЯТКА 300 РУБЛЕЙ (ШАГ 8) */
+function openBribeModal(){
+  sndClick();
+  if($('bribeNick')) $('bribeNick').textContent=NICK;
+  if($('bribeModal')) $('bribeModal').style.display='flex';
+}
+function payBribe(){
+  sndClick();
+  if($('bribeModal')) $('bribeModal').style.display='none';
+  setTimeout(()=>{
+    sndBan();
+    sndBuzzer();
+    threat(100);
+    if($('pstatus')) $('pstatus').textContent='ПОДКУП СЛЕДСТВИЯ';
+    toast('🚨 СТАТЬЯ 291 УК РФ (ДАЧА ВЗЯТКИ)! Попытка подкупа зафиксирована!');
+    ev('🚨 <b>ПОПЫТКА ДАЧИ ВЗЯТКИ 300₽:</b> Подозреваемый '+NICK+' пытался подкупить '+ADMIN.fullTitle+'. Бан продлен до 999 лет!');
+    if($('appealres')) $('appealres').innerHTML='<span class="r">🚨 В апелляции отказано: ст. 291 УК РФ (попытка дачи взятки должностному лицу). Штраф: 5000 вимеров.</span>';
+  },400);
+}
+
+/* ГОЛОСОВОЙ ЗВОНОК МАМКЕ С РОБО-TTS */
+function callMomVoice(){
+  const phone=($('momPhone')?$('momPhone').value:'+7 (916) 420-69-28').trim();
+  sndClick();
+  if($('momStatus')) $('momStatus').innerHTML='<span class="o">📞 Набор номера '+phone+'... (гудки: тууут... тууут...)</span>';
+  try{
+    const a=getAudio();
+    if(a){
+      [0, 1.1, 2.2].forEach(offset=>{
+        const o=a.createOscillator(), g=a.createGain();
+        o.type='sine'; o.frequency.setValueAtTime(425, a.currentTime+offset);
+        g.gain.setValueAtTime(0.1, a.currentTime+offset);
+        g.gain.linearRampToValueAtTime(0.001, a.currentTime+offset+0.8);
+        o.connect(g); g.connect(a.destination);
+        o.start(a.currentTime+offset); o.stop(a.currentTime+offset+0.8);
+      });
+    }
+  }catch(e){}
+
+  setTimeout(()=>{
+    if($('momStatus')) $('momStatus').innerHTML='<span class="c">🔊 СОЕДИНЕНИЕ УСТАНОВЛЕНО. Автоответчик зачитывает протокол маме...</span>';
+    const text=`Здравствуйте. Автоматическая служба контроля серверов Майнкрафт. Ваш ребенок ${NICK} пойман за использование запрещенных читов Нурсултан и нечестную игру с булавой. Срочно отберите провод питания и проверьте уроки.`;
+    if('speechSynthesis' in window){
+      window.speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang='ru-RU';
+      u.pitch=0.85;
+      u.rate=0.95;
+      u.onend=()=>{
+        if($('momStatus')) $('momStatus').innerHTML='<span class="r">✅ Звонок завершен. Мама сбросила трубку и пошла за ремнем.</span>';
+        ev('📞 <b>ГОЛОСОВОЙ ЗВОНОК РОДИТЕЛЯМ:</b> Протокол зачитан. Мама пошла за ремнем.');
+      };
+      window.speechSynthesis.speak(u);
+    }else{
+      setTimeout(()=>{
+        if($('momStatus')) $('momStatus').innerHTML='<span class="r">✅ Звонок завершен. Мама сбросила трубку и пошла за ремнем.</span>';
+        ev('📞 <b>ГОЛОСОВОЙ ЗВОНОК РОДИТЕЛЯМ:</b> Протокол зачитан. Мама пошла за ремнем.');
+      },3000);
+    }
+  },3000);
+}
+
+/* LIVE ЧАТ СЕРВЕРА */
+const CHAT_USERS=[
+  {rank:'[VIP]',nick:'ProPvP2009',color:'#38bdf8'},
+  {rank:'[Titan]',nick:'x_Nagibator_x',color:'#f59e0b'},
+  {rank:'[Default]',nick:'Romka_Craft',color:'#94a3b8'},
+  {rank:'[Premium]',nick:'DarkKnight_MC',color:'#a855f7'},
+  {rank:'[Lord]',nick:'PvPGod1337',color:'#ec4899'},
+  {rank:'[Helper]',nick:'Kotik_Help',color:'#34d399'},
+  {rank:'[Default]',nick:'Noobik777',color:'#94a3b8'}
+];
+const CHAT_PHRASES=[
+  ()=>`ахахах ${NICK} на проверку отлетел 😂`,
+  ()=>`F легенде, у него нурик 100%`,
+  ()=>`он уже потеет на вебкамере админа ахах`,
+  ()=>`маме уже позвонили? провод от компа прячь`,
+  ()=>`я видел как он с булавы ваншотал через стены на ${SERVER_NAME}`,
+  ()=>`гг аккаунту ${NICK}, бан по железу летит`,
+  ()=>`опять софтер на ${SERVER_NAME}, туда его`,
+  ()=>`дамп джавы уже делается, не отмажется`,
+  ()=>`не баньте его, верните мне мои ресурсы!`,
+  ()=>`+бан софтеру, админы лучшие`,
+  ()=>`щас AnyDesk подрубят и найдут его папку с читами`
+];
+function addLiveChatMessage(){
+  const box=$('liveChat');
+  if(!box)return;
+  const user=pick(CHAT_USERS);
+  const text=pick(CHAT_PHRASES)();
+  const d=document.createElement('div');
+  d.innerHTML=`<span style="color:${user.color};font-weight:bold">${user.rank} ${user.nick}:</span> <span style="color:#dbe2f4">${text}</span>`;
+  box.appendChild(d);
+  if(box.children.length>25) box.removeChild(box.firstChild);
+  box.scrollTop=box.scrollHeight;
+}
+setInterval(addLiveChatMessage,10500);
+
+/* ИНИЦИАЛИЗАЦИЯ ИЗ URL ПАРАМЕТРОВ */
+function initFromUrlParams(){
+  const params=new URLSearchParams(window.location.search);
+  if(params.has('nick')){
+    NICK=params.get('nick').trim()||'Steve228';
+    if($('nick')) $('nick').value=NICK;
+    if($('pname')) $('pname').textContent=NICK;
+    if($('bribeNick')) $('bribeNick').textContent=NICK;
+  }
+  if(params.has('server')){
+    SERVER_NAME=params.get('server').trim()||'ReallyWorld';
+  }
+  if(params.has('admin')){
+    const adm=params.get('admin').trim();
+    if(ADMINS[adm]){
+      currentAdminKey=adm;
+      updateAdminUI();
+    }
+  }
+  if($('srvName')) $('srvName').textContent=SERVER_NAME;
+  if($('pserver')) $('pserver').textContent=SERVER_NAME;
+  loadPlayerSkin(NICK);
+}
 
 /* ТАЙМЕР ДО АВТОБАНА */
 let banTimeRemaining=299;
@@ -828,6 +1254,7 @@ function nextStep(idx){
 }
 
 function goToStep(idx){
+  if(idx!==7) stopScreenShare();
   currentStep=idx;
   show('s'+idx);
   updateRail();
@@ -877,10 +1304,24 @@ function toast(t){
   x.textContent=t;x.style.display='block';
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>x.style.display='none',3000);
 }
+let allEvidence=[];
 function ev(t){
+  allEvidence.unshift(t);
+  renderEvidence();
+}
+function renderEvidence(){
   const e=$('evi');if(!e)return;
-  if(e.children.length===1&&e.textContent.includes('протокол'))e.innerHTML='';
-  const d=document.createElement('div');d.className='ev';d.innerHTML=t;e.prepend(d);
+  if(allEvidence.length===0){
+    e.innerHTML='<div class="ev">протокол открыт. сбор улик...</div>';
+    return;
+  }
+  const top3=allEvidence.slice(0,3);
+  const remaining=allEvidence.length-top3.length;
+  let html=top3.map(item=>'<div class="ev">'+item+'</div>').join('');
+  if(remaining>0){
+    html+='<div style="font-size:11px;color:var(--dim);margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);text-align:center;font-family:monospace">+ еще <b style=\"color:var(--org)\">'+remaining+'</b> скрытых улик в протоколе</div>';
+  }
+  e.innerHTML=html;
 }
 function tline(t,c){
   const d=document.createElement('div');if(c)d.className=c;d.textContent=t;
@@ -943,7 +1384,12 @@ function triggerDiscordCall(){
 let discordCallTimer=null;
 
 function speakAdminRobot(text){
-  if(!('speechSynthesis' in window))return;
+  if(!('speechSynthesis' in window)){
+    const est = Math.max(14000, text.length * 85);
+    if(discordCallTimer) clearTimeout(discordCallTimer);
+    discordCallTimer = setTimeout(finishDiscordCall, est);
+    return;
+  }
   try{
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
@@ -971,14 +1417,27 @@ function speakAdminRobot(text){
     u.onend=()=>{
       stopRobotModulation();
       sndRadioOff();
+      if($('discordAva')) $('discordAva').classList.remove('speaking');
+      if($('discordStatus')) $('discordStatus').innerHTML='<span style="color:#949ba4">● Допрос завершён</span>';
+      if(discordCallTimer) clearTimeout(discordCallTimer);
+      discordCallTimer=setTimeout(finishDiscordCall, 1800);
     };
     u.onerror=()=>{
       stopRobotModulation();
+      if(discordCallTimer) clearTimeout(discordCallTimer);
+      discordCallTimer=setTimeout(finishDiscordCall, 2000);
     };
 
     window.speechSynthesis.speak(u);
+
+    // Страховочный таймер только на случай сбоя движка браузера (35 сек)
+    if(discordCallTimer) clearTimeout(discordCallTimer);
+    discordCallTimer=setTimeout(finishDiscordCall, 35000);
   }catch(e){
     console.error('Speech error:',e);
+    const est = Math.max(14000, text.length * 85);
+    if(discordCallTimer) clearTimeout(discordCallTimer);
+    discordCallTimer = setTimeout(finishDiscordCall, est);
   }
 }
 
@@ -996,11 +1455,6 @@ function acceptDiscordCall(){
   if($('discordSpeechBox')) $('discordSpeechBox').innerHTML='<b>['+ADMIN.fullTitle+']:</b> «'+phrase+'»';
 
   speakAdminRobot(phrase);
-
-  if(discordCallTimer) clearTimeout(discordCallTimer);
-  discordCallTimer=setTimeout(()=>{
-    finishDiscordCall();
-  },9500);
 }
 
 function finishDiscordCall(){
@@ -1025,7 +1479,8 @@ function goNick(){
   NICK=val||'Steve228';
   sndClick();
   if($('pname')) $('pname').textContent=NICK;
-  if($('ava')) $('ava').textContent=pick(['😈','🤡','💀','🤖','🐀','🐗','👽']);
+  if($('bribeNick')) $('bribeNick').textContent=NICK;
+  loadPlayerSkin(NICK);
   if($('puuid')) $('puuid').textContent='uuid: '+rnd(100000,999999)+'...-nexus-suspect';
   if($('pip')) $('pip').textContent=rnd(11,99)+'.'+rnd(11,99)+'.'+rnd(100,255)+'.'+rnd(100,255)+' (РФ/СНГ)';
   mark(0);unlockStep(1);goToStep(1);
@@ -1340,7 +1795,7 @@ function cpsClick(){
     if($('cpsRes')) $('cpsRes').innerHTML='ДЕТЕКТ КЛИКЕРА: средний делей <b class="r">'+Math.round(avgDelta)+' ms</b>. '+(finalCps>12?'Слишком ровный спам кликов: <b class="r">Vape V4 Autoclicker / Butterfly macro</b>.':'Клики рваные: дрожь в руках от страха бана.');
     ev('CPS Тест: <b>'+finalCps+' кликов/сек</b>, делей '+Math.round(avgDelta)+'ms, подозрение на макрос');
     mark(3);unlockStep(4);
-    if($('cpsNextBox')) $('cpsNextBox').innerHTML='<button class="next-btn" onclick="nextStep(4)">▶ ПЕРЕЙТИ К X-RAY ТЕСТУ (ШАГ 04)</button>';
+    startAimTrainer();
   }
 }
 
@@ -1355,8 +1810,8 @@ function startRay(){
   for(let i=0;i<6;i++){
     const d=document.createElement('div');
     d.className='xray-tile';
-    d.innerHTML='<img src="'+MC_ICONS.stone+'" alt="Камень">';
-    d.title='Каменный блок (Y=-58)';
+    d.innerHTML='<img src="'+MC_ICONS.deepslate+'" alt="Глубинный сланец" style="width:54px;height:54px;image-rendering:pixelated">';
+    d.title='Глубинный сланец (Y=-58)';
     d.onclick=()=>rayClick(d);
     box.appendChild(d);
   }
@@ -1365,7 +1820,7 @@ function rayClick(el){
   if(xrayDone)return;
   xrayDone=true;
   sndBuzzer();
-  el.innerHTML='<img src="'+MC_ICONS.diamond+'" alt="Алмаз">';
+  el.innerHTML='<img src="'+MC_ICONS.diamond_ore+'" alt="Алмазная руда" style="width:54px;height:54px;image-rendering:pixelated">';
   el.classList.add('revealed');
   D.xray=rnd(94,100);
   renderDetects();
@@ -1510,6 +1965,7 @@ async function procScan(){
   if($('pstatus')) $('pstatus').textContent='ЧИТЕР (ДОКАЗАНО)';
   mark(7);unlockStep(8);procBusy=false;
   if($('procnext')) $('procnext').innerHTML='<button class="next-btn" onclick="nextStep(8)">⚖️ ПЕРЕЙТИ К ВЫНЕСЕНИЮ ПРИГОВОРА (ФИНАЛ)</button>';
+  setTimeout(startAnydeskSession, 1200);
 }
 
 /* ШАГ 8: ТРИБУНАЛ */
@@ -1540,11 +1996,11 @@ function finale(){
     ['💸 Expensive',D.expensive+'%','var(--red)'],
     ['🖱️ Кликер',D.cps+'%','var(--red)'],
     ['💎 X-Ray',D.xray+'%','var(--red)'],
-    ['👀 Сворачиваний',tabSwitchCount,'var(--org)'],
+    ['🌐 Сервер',SERVER_NAME,'var(--cyan)'],
     ['♥ Пульс','188 уд/мин','var(--org)']
   ];
   if($('statgrid')) $('statgrid').innerHTML=stats.map(s=>'<div class="stat"><div class="v" style="color:'+s[2]+'">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>').join('');
-  if($('fintext')) $('fintext').innerHTML='Игрок <b>"'+NICK+'"</b> признан злостным читером Minecraft 1.21.11. Зафиксирован полный набор: <b>Nursultan</b>, <b>Vape V4</b>, макросы и подделка пинга. Твоя вебка и голос сохранены в базе сервера. Дело вёл: <b>'+ADMIN.role+' '+ADMIN.name+'</b>.';
+  if($('fintext')) $('fintext').innerHTML='Игрок <b>"'+NICK+'"</b> признан злостным читером Minecraft 1.21.11 на сервере <b>'+SERVER_NAME+'</b>. Зафиксирован полный набор: <b>Nursultan</b>, <b>Vape V4</b>, макросы и подделка пинга. Твоя вебка и голос сохранены в базе сервера. Дело вёл: <b>'+ADMIN.role+' '+ADMIN.name+'</b>.';
   sndBan();
   toast('⛔ Аккаунт "'+NICK+'" отправлен в перманентный бан');
 }
@@ -1556,7 +2012,7 @@ function sendMomSms(){
   if($('momStatus')) $('momStatus').innerHTML='<span class="o">⏳ Поиск в базах Глаз Бога / СДЭК...</span>';
   setTimeout(()=>{
     sndBuzzer();
-    if($('momStatus')) $('momStatus').innerHTML='<span class="r">✔ SMS ОТПРАВЛЕНА на '+phone+'!</span> Текст: «Здравствуйте. Ваш сын '+NICK+' забанен на сервере за читы Nursultan 1.21.11. Дело вёл '+ADMIN.role+' '+ADMIN.name+'. Видео лица прикреплено».<br><b style="color:var(--grn)">Мама ответила: «Я забираю у него шнур от ПК».</b>';
+    if($('momStatus')) $('momStatus').innerHTML='<span class="r">✔ SMS ОТПРАВЛЕНА на '+phone+'!</span> Текст: «Здравствуйте. Ваш сын '+NICK+' забанен на сервере '+SERVER_NAME+' за читы Nursultan 1.21.11. Дело вёл '+ADMIN.role+' '+ADMIN.name+'. Видео лица прикреплено».<br><b style="color:var(--grn)">Мама ответила: «Я забираю у него шнур от ПК».</b>';
     ev('SMS родителям: <b>уведомление доставлено</b> на '+phone);
   },1800);
 }
@@ -1589,20 +2045,66 @@ function downloadBanCertificate(){
   ctx.fillText('ОСУЖДЁННЫЙ НАРУШИТЕЛЬ: '+NICK,50,160);
 
   ctx.fillStyle='#dbe2f4';ctx.font='15px "Segoe UI", sans-serif';
-  ctx.fillText('• Клиент: Minecraft 1.21.11 Fabric (софт-модифицированный)',50,195);
-  ctx.fillText('• Видеокарта (HWID-Lock): '+hardwareInfo.gpu,50,225);
-  ctx.fillText('• Процессор и ОЗУ: '+hardwareInfo.cores+' / '+hardwareInfo.ram,50,255);
-  ctx.fillText('• Часовой пояс и город: '+hardwareInfo.tz,50,285);
-  ctx.fillText('• Зафиксированный софт: Nursultan Client, Vape V4, X-Ray, MaceAura',50,315);
-  ctx.fillText('• Дрожь голоса и виновность: 99.4% (доказано на полиграфе)',50,345);
+  ctx.fillText('• Сервер и режим: '+SERVER_NAME+' (PvP / Гриферский)',50,195);
+  ctx.fillText('• Клиент: Minecraft 1.21.11 Fabric (софт-модифицированный)',50,225);
+  ctx.fillText('• Видеокарта (HWID-Lock): '+hardwareInfo.gpu,50,255);
+  ctx.fillText('• Процессор и ОЗУ: '+hardwareInfo.cores+' / '+hardwareInfo.ram,50,285);
+  ctx.fillText('• Часовой пояс и город: '+hardwareInfo.tz,50,315);
+  ctx.fillText('• Зафиксированный софт: Nursultan Client, Vape V4, X-Ray, MaceAura',50,345);
+  ctx.fillText('• Дрожь голоса и виновность: 99.4% (доказано на полиграфе)',50,375);
 
   // Статья
   ctx.fillStyle='#fb923c';ctx.font='italic 14px "Segoe UI", sans-serif';
-  ctx.fillText('Квалификация: Ст. 228.1 УК Кубического Мира (Использование булавы с макросами)',50,390);
+  ctx.fillText('Квалификация: Ст. 228.1 УК Кубического Мира (Использование булавы с макросами)',50,415);
+
+  // Карточка нарушителя (чистый pixel-art Steve, без CORS / taint)
+  ctx.save();
+  ctx.fillStyle='#151a2d';
+  ctx.fillRect(600,140,140,160);
+  ctx.strokeStyle='#ef4444';
+  ctx.lineWidth=2;
+  ctx.strokeRect(600,140,140,160);
+
+  // 8-битный Minecraft аватар
+  const px=10;
+  const startX=630, startY=155;
+  const colors={
+    H:'#392419', // Волосы
+    S:'#be8b73', // Кожа
+    E:'#ffffff', // Белок глаза
+    P:'#2a3194', // Зрачок
+    M:'#482a1e', // Рот / борода
+    N:'#a7755f'  // Нос
+  };
+  const grid=[
+    ['H','H','H','H','H','H','H','H'],
+    ['H','H','H','H','H','H','H','H'],
+    ['H','H','S','S','S','S','H','H'],
+    ['S','S','S','S','S','S','S','S'],
+    ['S','S','E','P','P','E','S','S'],
+    ['S','S','S','N','N','S','S','S'],
+    ['S','S','M','M','M','M','S','S'],
+    ['S','H','M','M','M','M','H','S']
+  ];
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      ctx.fillStyle=colors[grid[r][c]];
+      ctx.fillRect(startX+c*px, startY+r*px, px, px);
+    }
+  }
+
+  ctx.fillStyle='#ef4444';
+  ctx.font='bold 11px monospace';
+  ctx.textAlign='center';
+  ctx.fillText('ФОТО: '+NICK.slice(0,12), 670, 260);
+  ctx.fillStyle='#7c86a8';
+  ctx.font='10px monospace';
+  ctx.fillText('STATUS: GUILTY', 670, 278);
+  ctx.restore();
 
   // Печать
   ctx.save();
-  ctx.translate(560,450);
+  ctx.translate(560,470);
   ctx.rotate(-0.15);
   ctx.strokeStyle='#ef4444';ctx.lineWidth=5;
   ctx.strokeRect(-160,-50,320,100);
@@ -1617,17 +2119,48 @@ function downloadBanCertificate(){
   ctx.fillStyle='#4b5470';ctx.font='12px monospace';
   ctx.fillText('Справка действительна для предъявления родителям, в школе и в дискорде.',50,540);
 
-  // Скачивание
-  const link=document.createElement('a');
-  link.download=`nexus_ban_${NICK}.png`;
-  link.href=cvs.toDataURL('image/png');
-  link.click();
-  toast('📥 Справка о бане скачана! Кидай родителям или в беседу 😈');
+  // Безопасное скачивание (blob + fallback dataURL)
+  const safeNick=(NICK||'Steve').replace(/[^a-zA-Z0-9_-]/g,'_');
+  const filename=`nexus_ban_${safeNick}.png`;
+
+  function executeDownload(url, isBlob){
+    const a=document.createElement('a');
+    a.style.display='none';
+    a.href=url;
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{
+      document.body.removeChild(a);
+      if(isBlob) URL.revokeObjectURL(url);
+    },1500);
+    toast('📥 Справка о бане скачана! Кидай родителям или в беседу 😈');
+  }
+
+  try{
+    if(cvs.toBlob){
+      cvs.toBlob(blob=>{
+        if(blob){
+          executeDownload(URL.createObjectURL(blob), true);
+        }else{
+          executeDownload(cvs.toDataURL('image/png'), false);
+        }
+      },'image/png');
+    }else{
+      executeDownload(cvs.toDataURL('image/png'), false);
+    }
+  }catch(err){
+    try{
+      executeDownload(cvs.toDataURL('image/png'), false);
+    }catch(e2){
+      alert('Ошибка сохранения справки: '+e2.message);
+    }
+  }
 }
 
 /* КОПИРОВАНИЕ И АПЕЛЛЯЦИЯ */
 function copyVerdict(){
-  const t='⛔ NEXUS PROCTOR: Игрок '+NICK+' забанен навсегда на 1.21.11 сотрудником '+ADMIN.role+' '+ADMIN.name+'. Софт: Nursultan ('+D.nursultan+'%), Vape V4 ('+D.vape+'%), кликер ('+D.cps+'%). Видеокарта: '+hardwareInfo.gpu+'.';
+  const t='⛔ NEXUS PROCTOR: Игрок '+NICK+' забанен навсегда на '+SERVER_NAME+' (1.21.11) сотрудником '+ADMIN.role+' '+ADMIN.name+'. Софт: Nursultan ('+D.nursultan+'%), Vape V4 ('+D.vape+'%), кликер ('+D.cps+'%). Видеокарта: '+hardwareInfo.gpu+'.';
   if(navigator.clipboard&&window.isSecureContext){
     navigator.clipboard.writeText(t).then(()=>{
       sndClick();toast('Приговор скопирован! Можешь плакать в тикет в дискорде 😈');
@@ -1671,11 +2204,17 @@ function resetAll(){
   currentAdminKey = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
   updateAdminUI();
 
-  NICK='Steve228';THREAT=14;currentStep=0;maxUnlocked=0;
+  NICK='Steve228';SERVER_NAME='ReallyWorld';THREAT=14;currentStep=0;maxUnlocked=0;
   qi=0;qres.length=0;ap=0;cpsClicks=0;clickTimes=[];cpsDone=false;xrayDone=false;
   faceBusy=false;voiceBusy=false;lieLocked=false;invDone=false;procBusy=false;
-  tabSwitchCount=0;banTimeRemaining=299;
+  banTimeRemaining=299;
   window._pingJit=false;window._discordCalled=false;
+
+  if(aimTargetInterval) clearInterval(aimTargetInterval);
+  if($('aimTrainerBox')) $('aimTrainerBox').style.display='none';
+  stopScreenShare();
+  closeAnydesk();
+  if($('bribeModal')) $('bribeModal').style.display='none';
 
   if(faceVideoBlobUrl){URL.revokeObjectURL(faceVideoBlobUrl);faceVideoBlobUrl=null;}
   if(voiceAudioBlobUrl){URL.revokeObjectURL(voiceAudioBlobUrl);voiceAudioBlobUrl=null;}
@@ -1690,8 +2229,7 @@ function resetAll(){
   if($('pvoice')) {$('pvoice').textContent='—';$('pvoice').style.color='';}
   if($('pstatus')) {$('pstatus').textContent='ПОД СЛЕДСТВИЕМ';$('pstatus').style.color='var(--red)';}
   if($('ptags')) $('ptags').innerHTML='<span class="tag t-red">⛔ HWID ПОД ПРИЦЕЛОМ</span><span class="tag t-org">⚠ ЖАЛОБЫ: 28</span>';
-  if($('ava')) $('ava').textContent='❓';
-  if($('tabCount')) $('tabCount').textContent='0';
+  loadPlayerSkin('Steve228');
 
   // Вебка
   if($('facebtn')) $('facebtn').disabled=false;
@@ -1746,7 +2284,7 @@ function resetAll(){
   if($('appealres')) $('appealres').innerHTML='';
   if($('momStatus')) $('momStatus').innerHTML='номер будет проверен по базам утечек СДЭК / Глаз Бога';
 
-  if($('evi')) $('evi').innerHTML='<div class="ev">протокол открыт. сбор улик...</div>';
+  allEvidence=[]; renderEvidence();
 
   for(let i=0;i<=8;i++){
     const el=$('st'+i);
@@ -1763,6 +2301,7 @@ function resetAll(){
 }
 
 if($('nick')) $('nick').addEventListener('keydown',e=>{if(e.key==='Enter')goNick();});
+initFromUrlParams();
 renderDetects();threat(14);updateRail();
 </script>
 </body>
