@@ -276,7 +276,7 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 </div>
 <div class="hbadge bad"><span class="hdot"></span>СТАТУС: <b>ВЫЗВАН НА ПРОВЕРКУ</b></div>
 <div class="hbadge warn">⏳ ДО АВТОБАНА: <b id="banTimer">04:59</b></div>
-<div class="hbadge" id="srvBadge">🌐 СЕРВЕР: <b id="srvName">ReallyWorld</b></div>
+<div class="hbadge" id="srvBadge">🌐 СЕРВЕР: <b id="srvName">MaceFight</b></div>
 <div class="hbadge" id="sndbtn" style="cursor:pointer" onclick="toggleSound()">🔊 звук: <b id="sndtxt">ВКЛ</b></div>
 <button class="panic-btn" onclick="surrender()">🏳️ ЯВКА С ПОВИННОЙ</button>
 </header>
@@ -312,7 +312,7 @@ footer{text-align:center;color:#3d4463;font-size:11px;padding:16px}
 </div>
 <div style="margin-top:8px">
 <div class="prow"><span>IP-адрес</span><b id="pip">—.—.—.—</b></div>
-<div class="prow"><span>Сервер</span><b id="pserver" style="color:var(--cyan)">ReallyWorld</b></div>
+<div class="prow"><span>Сервер</span><b id="pserver" style="color:var(--cyan)">MaceFight</b></div>
 <div class="prow"><span>Клиент</span><b>Fabric 1.21.11 (Подозрительный)</b></div>
 <div class="prow"><span>Подозрение на софт</span><b id="psoft" style="color:var(--red)">Nursultan / Meteor</b></div>
 <div class="prow"><span>Потливость рук</span><b id="psweat">—</b></div>
@@ -623,7 +623,7 @@ function updateAdminUI(){
 }
 updateAdminUI();
 
-let NICK='Steve228', SERVER_NAME='ReallyWorld', THREAT=14;
+let NICK='Steve228', SERVER_NAME='MaceFight', THREAT=14;
 let currentStep=0, maxUnlocked=0;
 let soundEnabled=true, audioCtx=null;
 
@@ -1194,7 +1194,7 @@ function initFromUrlParams(){
     if($('bribeNick')) $('bribeNick').textContent=NICK;
   }
   if(params.has('server')){
-    SERVER_NAME=params.get('server').trim()||'ReallyWorld';
+    SERVER_NAME=params.get('server').trim()||'MaceFight';
   }
   if(params.has('admin')){
     const adm=params.get('admin').trim();
@@ -2204,7 +2204,7 @@ function resetAll(){
   currentAdminKey = Math.random() < 0.5 ? 'WebingYT' : 'Dumcran';
   updateAdminUI();
 
-  NICK='Steve228';SERVER_NAME='ReallyWorld';THREAT=14;currentStep=0;maxUnlocked=0;
+  NICK='Steve228';SERVER_NAME='MaceFight';THREAT=14;currentStep=0;maxUnlocked=0;
   qi=0;qres.length=0;ap=0;cpsClicks=0;clickTimes=[];cpsDone=false;xrayDone=false;
   faceBusy=false;voiceBusy=false;lieLocked=false;invDone=false;procBusy=false;
   banTimeRemaining=299;
